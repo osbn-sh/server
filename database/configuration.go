@@ -1,24 +1,24 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jmoiron/sqlx"
 )
 
 type PostgresDB struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func (p *PostgresDB) Conn() *sql.DB {
+func (p *PostgresDB) Conn() *sqlx.DB {
 	return p.db
 }
 
 func New() *PostgresDB {
-	db, err := sql.Open("pgx", os.Getenv("DATABASE_URL"))
+	db, err := sqlx.Open("pgx", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(fmt.Errorf("can't open postgres db: %v", err))
 	}

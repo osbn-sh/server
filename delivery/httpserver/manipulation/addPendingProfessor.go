@@ -35,7 +35,7 @@ func (h Handler) addPendingProfessor(c *fiber.Ctx) error {
 		DescriptionEnglish: acceptData.DescriptionEnglish,
 		Description:        acceptData.Description,
 		ImageUrl:           &acceptData.ImageUrl,
-		EducationHistory:   &acceptData.EducationHistory,
+		EducationHistory:   acceptData.EducationHistory,
 		SubmittedBy:        int64(userId),
 	}
 

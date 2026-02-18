@@ -33,7 +33,7 @@ func (h Handler) addPendingMajor(c *fiber.Ctx) error {
 		Name:               acceptData.Name,
 		NameEnglish:        acceptData.NameEnglish,
 		DescriptionEnglish: acceptData.DescriptionEnglish,
-		Description:        &acceptData.Description,
+		Description:        acceptData.Description,
 		SubmittedBy:        int64(userId),
 	}
 

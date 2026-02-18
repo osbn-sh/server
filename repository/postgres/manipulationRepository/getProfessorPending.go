@@ -59,11 +59,11 @@ func (d DB) GetProfessorPending() ([]entity.PendingProfessor, error) {
 
 		// تبدیل []byte به *map[string]string
 		if eduHistoryJSON != nil {
-			var eduMap map[string]string
+			var eduMap json.RawMessage
 			if err := json.Unmarshal(eduHistoryJSON, &eduMap); err != nil {
 				return nil, err
 			}
-			professor.EducationHistory = &eduMap
+			professor.EducationHistory = eduMap
 		} // اگر nil باشد، مقدار پیش‌فرض *map[string]string همان nil است
 
 		professors = append(professors, professor)

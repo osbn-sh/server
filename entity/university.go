@@ -9,6 +9,6 @@ type University struct {
 	ImageUrl           string `json:"image_url"`
 	Description        string `json:"description"`
 	DescriptionEnglish string `json:"description_english"`
-	SubmittedBy        string `json:"submitted_by"`
+	RegisteredBy       string `json:"registered_by"`
 	Status             string `json:"status"`
 }
