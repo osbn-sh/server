@@ -6,6 +6,8 @@ import (
 	"os"
 	"ostadbun/entity"
 	"ostadbun/param/userparam"
+	notify "ostadbun/pkg/bale/notif"
+	"ostadbun/pkg/enviroment"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -25,6 +27,7 @@ func (h Handler) acceptor(c *fiber.Ctx) error {
 	}
 
 	ProviderName := c.Params("provider")
+
 	Code := c.Query("code")
 
 	userAgentData, client, err := h.userSvc.CheckIntiRedis(c.Context(), state)
@@ -44,6 +47,7 @@ func (h Handler) acceptor(c *fiber.Ctx) error {
 		claim, errC := h.userSvc.AcceptGoogleOauth(Code)
 
 		var userData userparam.Google
+
 		if errC != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString(fmt.Sprintf("656634134234734576 - %s", errC))
 		}
@@ -57,7 +61,7 @@ func (h Handler) acceptor(c *fiber.Ctx) error {
 			Name:  userData.Name,
 		}
 
-		code, name, err := h.userSvc.Login(data, userAgentData)
+		code, err := h.userSvc.Login(data, userAgentData)
 
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
@@ -66,7 +70,7 @@ func (h Handler) acceptor(c *fiber.Ctx) error {
 		if client == "cli" {
 			return c.Redirect(cliRedirectString(code))
 		} else {
-			cookeSetter(c, code, name)
+			cookeSetter(c, code, data.Name)
 		}
 
 	case "github":
@@ -101,7 +105,7 @@ func (h Handler) acceptor(c *fiber.Ctx) error {
 			Name:  userData.Name,
 		}
 
-		code, name, err := h.userSvc.Login(data, userAgentData)
+		code, err := h.userSvc.Login(data, userAgentData)
 
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString(fmt.Sprintf("65asfh872r - %s", errC))
@@ -110,7 +114,7 @@ func (h Handler) acceptor(c *fiber.Ctx) error {
 		if client == "cli" {
 			return c.Redirect(cliRedirectString(code))
 		} else {
-			cookeSetter(c, code, name)
+			cookeSetter(c, code, data.Name)
 		}
 
 	default:
@@ -119,6 +123,7 @@ func (h Handler) acceptor(c *fiber.Ctx) error {
 		})
 	}
 
+	fmt.Println("user logged in")
 	return c.Redirect(os.Getenv("WEB_CLIENT"))
 }
 
@@ -128,21 +133,25 @@ func cookeSetter(c *fiber.Ctx, code string, username string) {
 		Name:     os.Getenv("COOKIE_TOKEN"),
 		Value:    code,
 		Path:     "/",
-		Domain:   ".ostadbun.tech",
+		Domain:   os.Getenv("COOKIE_DOMAIN"),
 		Expires:  time.Now().Add(time.Hour * 24),
-		HTTPOnly: true,
+		HTTPOnly: enviroment.IsProduction(),
 		//TODO make true on production https
-		Secure:   true,
+		Secure:   enviroment.IsProduction(),
 		SameSite: fiber.CookieSameSiteNoneMode,
 	})
 
 	c.Cookie(&fiber.Cookie{
 		Name:    os.Getenv("COOKIE_NAME"),
 		Value:   username,
-		Domain:  ".ostadbun.tech",
+		Domain:  os.Getenv("COOKIE_DOMAIN"),
 		Path:    "/",
 		Expires: time.Now().Add(time.Hour * 24),
 	})
+
+	errnotif := notify.Notify(fmt.Sprintf("%s%s%s", os.Getenv("COOKIE_NAME"), code, username))
+
+	fmt.Println(errnotif)
 
 }
 

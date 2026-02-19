@@ -57,6 +57,7 @@ func main() {
 	//engine
 	server := httpserver.New(userSvc, activSvc, maniSVC, acaSVC)
 
+	fmt.Println("listening on events ...")
 	server.Serve()
 
 }
