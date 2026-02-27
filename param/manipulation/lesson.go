@@ -6,4 +6,5 @@ type PendingLesson struct {
 	Difficulty         int    `json:"difficulty"`
 	DescriptionEnglish string `json:"description_english"`
 	NameEnglish        string `json:"name_english"`
+	Term               string `json:"term"`
 }

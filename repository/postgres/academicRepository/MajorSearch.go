@@ -6,12 +6,16 @@ import (
 
 func (d DB) MajorSearch(name string) ([]entity.Major, error) {
 	var majors []entity.Major
-
+	name = "%" + name + "%"
 	// Query برای جستجوی رشته‌ها
 	query := `
-        SELECT id, name 
+        SELECT id, name ,name_english,description,description_english
         FROM major 
-        WHERE name ILIKE '%' || $1 || '%'
+        WHERE 
+            name ILIKE $1 OR 
+			name_english ILIKE $1 OR
+			description ILIKE $1 OR
+			description_english ILIKE $1;
     `
 
 	// اجرای Query و دریافت نتایج
@@ -27,6 +31,9 @@ func (d DB) MajorSearch(name string) ([]entity.Major, error) {
 		err := rows.Scan(
 			&major.Id,
 			&major.Name,
+			&major.NameEnglish,
+			&major.Description,
+			&major.DescriptionEnglish,
 		)
 		if err != nil {
 			return nil, err // در صورت خطا در Scan، خطا را بازگردانی کن

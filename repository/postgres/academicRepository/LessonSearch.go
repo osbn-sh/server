@@ -6,12 +6,17 @@ import (
 
 func (d DB) LessonSearch(name string) ([]entity.Lesson, error) {
 	var lessons []entity.Lesson
+	name = "%" + name + "%"
 
 	// Query برای جستجوی درس‌ها
 	query := `
-        SELECT id, name, difficulty, description 
+        SELECT id, name,name_english, difficulty, description ,description_english
         FROM lesson 
-        WHERE name ILIKE '%' || $1 || '%'
+        WHERE 
+            name ILIKE $1 OR 
+			name_english ILIKE $1 OR
+			description ILIKE $1 OR
+		 	description_english ILIKE $1; 
     `
 
 	// اجرای Query و دریافت نتایج
@@ -27,8 +32,10 @@ func (d DB) LessonSearch(name string) ([]entity.Lesson, error) {
 		err := rows.Scan(
 			&lesson.Id,
 			&lesson.Name,
+			&lesson.NameEnglish,
 			&lesson.Difficulty,
 			&lesson.Description,
+			&lesson.DescriptionEnglish,
 		)
 		if err != nil {
 			return nil, err // در صورت خطا در Scan، خطا را بازگردانی کن

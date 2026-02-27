@@ -1,6 +1,7 @@
 package academicservice
 
 import (
+	"fmt"
 	"ostadbun/entity"
 	"ostadbun/repository/postgres/academicRepository"
 )
@@ -33,6 +34,7 @@ func (s Service) ProfessorSearch(name string) ([]entity.Professor, error) {
 		// TODO log here
 	}
 
+	fmt.Println(err)
 	return data, err
 
 }
@@ -56,6 +58,8 @@ func (s Service) MajorSearch(name string) ([]entity.Major, error) {
 	if err != nil {
 		// TODO log here
 	}
+
+	fmt.Println(err)
 
 	return data, err
 

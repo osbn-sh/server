@@ -1,0 +1,6 @@
+ALTER TABLE lesson
+    ADD COLUMN IF NOT EXISTS term TEXT;
+
+ALTER TABLE pending_lesson
+    ADD COLUMN IF NOT EXISTS term TEXT;
+

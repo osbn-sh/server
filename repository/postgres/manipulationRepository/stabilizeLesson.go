@@ -36,10 +36,11 @@ func (d DB) StabilizeLesson(pendingLessonID int) (err error) {
 			difficulty,
 			description,
 			description_english,
+		    term,
 			registered_by,
 			is_released
 		)
-		VALUES ($1, $2, $3, $4, $5,$6, $7)
+		VALUES ($1, $2, $3, $4, $5,$6, $7,$8)
 	`
 
 	_, err = tx.Exec(
@@ -49,6 +50,7 @@ func (d DB) StabilizeLesson(pendingLessonID int) (err error) {
 		pending.Difficulty,
 		pending.Description,
 		pending.DescriptionEnglish,
+		pending.Term,
 		pending.SubmittedBy,
 		true,
 	)

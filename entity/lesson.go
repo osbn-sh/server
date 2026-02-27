@@ -4,6 +4,7 @@ type Lesson struct {
 	Id                 string `json:"id"`
 	Name               string `json:"name"`
 	NameEnglish        string `json:"name_english"`
+	Term               string `json:"term"`
 	Difficulty         int    `json:"difficulty"`
 	Description        string `json:"description"`
 	DescriptionEnglish string `json:"description_english"`

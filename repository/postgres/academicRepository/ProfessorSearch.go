@@ -1,17 +1,24 @@
 package academicRepository
 
 import (
+	"fmt"
 	"ostadbun/entity"
 )
 
 func (d DB) ProfessorSearch(name string) ([]entity.Professor, error) {
 	var professors []entity.Professor
+	fmt.Println("searching or ", name)
+	name = "%" + name + "%"
 
 	// Query برای جستجوی اساتید
 	query := `
-        SELECT id, name, education_history, image_url, description 
+        SELECT id, name,name_english, education_history, image_url, description 
         FROM professor 
-        WHERE name ILIKE '%' || $1 || '%'
+        WHERE 
+            	name ILIKE $1 OR
+				name_english ILIKE $1 OR
+				description ILIKE $1 OR
+				description_english ILIKE $1;
     `
 
 	// اجرای Query و دریافت نتایج
@@ -27,6 +34,7 @@ func (d DB) ProfessorSearch(name string) ([]entity.Professor, error) {
 		err := rows.Scan(
 			&professor.Id,
 			&professor.Name,
+			&professor.NameEnglish,
 			&professor.EducationHistory, // فیلد JSONB
 			&professor.ImageUrl,
 			&professor.Description,

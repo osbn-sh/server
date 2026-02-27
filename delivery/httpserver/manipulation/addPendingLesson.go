@@ -1,9 +1,9 @@
 package manipulation
 
 import (
+	"fmt"
 	"ostadbun/entity"
 	manipulationParam "ostadbun/param/manipulation"
-	notify "ostadbun/pkg/bale/notif"
 	"ostadbun/pkg/httpstorage"
 
 	"github.com/gofiber/fiber/v2"
@@ -34,15 +34,19 @@ func (h Handler) addPendingLesson(c *fiber.Ctx) error {
 		NameEnglish:        acceptData.NameEnglish,
 		DescriptionEnglish: acceptData.DescriptionEnglish,
 		Description:        acceptData.Description,
+		Term:               acceptData.Term,
 		Difficulty:         acceptData.Difficulty,
 		SubmittedBy:        int64(userId),
 	}
 
 	go func() {
-		if err := notify.NotifyNewLesson(data); err != nil {
-			//TODO log here
-		}
+		//if err := notify.NotifyNewLesson(data); err != nil {
+		//	//TODO log here
+		//}
 	}()
 
-	return h.manipulSVC.AddPendingLesson(data, userId)
+	rs := h.manipulSVC.AddPendingLesson(data, userId)
+
+	fmt.Println(rs)
+	return rs
 }

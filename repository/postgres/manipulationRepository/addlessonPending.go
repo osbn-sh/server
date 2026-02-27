@@ -13,8 +13,9 @@ func (d DB) AddLessonPending(lesson entity.PendingLesson, userId int) error {
                                    description,
                                    name_english,
                                    description_english,
+                                   term,
                                    submitted_by
-                                   ) values ($1, $2, $3,$4,$5,$6)
+                                   ) values ($1, $2, $3,$4,$5,$6,$7)
     `
 
 	err := d.conn.Conn().QueryRow(query,
@@ -23,6 +24,7 @@ func (d DB) AddLessonPending(lesson entity.PendingLesson, userId int) error {
 		lesson.Description,
 		lesson.NameEnglish,
 		lesson.DescriptionEnglish,
+		lesson.Term,
 		userId,
 	).Err()
 

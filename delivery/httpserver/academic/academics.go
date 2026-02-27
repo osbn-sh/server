@@ -1,6 +1,7 @@
 package academic
 
 import (
+	"fmt"
 	"ostadbun/entity"
 
 	"github.com/gofiber/fiber/v2"
@@ -61,6 +62,13 @@ func (h Handler) Academics(c *fiber.Ctx) error {
 		academicsData.Professor = Professors
 	}
 
-	return c.Status(200).JSON(academicsData)
+	logic := errM == nil && errL == nil && errP == nil && errU == nil
+	fmt.Println(logic)
+
+	if logic {
+		return c.Status(200).JSON(academicsData)
+	} else {
+		return c.Status(500).SendString("internal server error")
+	}
 
 }

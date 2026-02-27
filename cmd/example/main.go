@@ -2,30 +2,40 @@ package main
 
 import (
 	"fmt"
-	"ostadbun/database"
-	"ostadbun/repository/postgres/manipulationRepository"
-
-	"github.com/joho/godotenv"
+	"ostadbun/pkg/richerror"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("Error loading .env file resume and load from local env")
-	}
-	dbConf := database.New()
 
-	maniRepo := manipulationRepository.New(dbConf)
+	a()
 
-	fmt.Println("is ok")
-	errme := maniRepo.StabilizeUniversity(1)
+}
 
-	if errme != nil {
-		fmt.Println("💀")
-	} else {
-		fmt.Println("👱🏻‍♀️")
-	}
+func a() error {
 
-	fmt.Println(errme)
+	err := b()
+
+	errR, _ := err.(richerror.RichError)
+
+	errF := errR.Unwrap()
+
+	errY, _ := errF.(richerror.RichError)
+
+	fmt.Println(errR.Error(), errY.Error())
+
+	return richerror.New("layertest - funca").WithErr(err).WithMessage("this is a")
+
+}
+
+func b() error {
+
+	err := c()
+	return richerror.New("").WithErr(err).WithMessage("this is b")
+
+}
+
+func c() richerror.RichError {
+
+	return richerror.New("layertest - funcc").WithMessage("this is c")
 
 }

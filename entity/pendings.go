@@ -45,6 +45,7 @@ type PendingLesson struct {
 	DescriptionEnglish string     `json:"description_english" db:"description_english"`
 	Difficulty         int        `json:"difficulty" db:"difficulty"`
 	Description        string     `json:"description,omitempty" db:"description"`
+	Term               string     `json:"term" db:"term"`
 	Status             string     `json:"status" db:"status"`
 	SubmittedBy        int64      `json:"submitted_by" db:"submitted_by"`
 	SubmittedAt        time.Time  `json:"submitted_at" db:"submitted_at"`
