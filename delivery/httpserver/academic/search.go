@@ -14,7 +14,7 @@ type academic struct {
 	Major      []entity.Major      `json:"major,omitempty"`
 }
 
-func (h Handler) Academics(c *fiber.Ctx) error {
+func (h Handler) Search(c *fiber.Ctx) error {
 	university := c.Query("university")
 	lesson := c.Query("lesson")
 	professor := c.Query("professor")

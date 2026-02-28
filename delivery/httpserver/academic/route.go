@@ -6,9 +6,11 @@ import (
 
 func (h Handler) SetRoutes(e *fiber.App) {
 	userGroup := e.Group("/academic")
+	userGroup.Get("", h.Search)
 
-	userGroup.Get("/university", h.University)
-
-	userGroup.Get("", h.Academics)
+	userGroup.Get("/university/:id", h.UniversityGet)
+	userGroup.Get("/professor/:id", h.ProfessorGet)
+	userGroup.Get("/major/:id", h.MajorGet)
+	userGroup.Get("/lesson/:id", h.LessonGet)
 
 }

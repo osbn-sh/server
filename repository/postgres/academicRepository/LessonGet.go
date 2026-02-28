@@ -1,0 +1,34 @@
+package academicRepository
+
+import (
+	"ostadbun/entity"
+)
+
+func (d DB) LessonGet(id int) (*entity.Lesson, error) {
+	var lessons entity.Lesson
+
+	// Query برای جستجوی درس‌ها
+	query := `
+        SELECT name ,name_english,difficulty,description ,description_english,term
+        FROM lesson 
+        WHERE 
+		 	id = $1; 
+    `
+
+	// اجرای Query و دریافت نتایج
+	errT := d.conn.Conn().QueryRow(query, id).Scan(
+
+		&lessons.Name,
+		&lessons.NameEnglish,
+		&lessons.Difficulty,
+		&lessons.Description,
+		&lessons.DescriptionEnglish,
+		&lessons.Term,
+	)
+
+	if errT != nil {
+		return nil, errT
+	}
+
+	return &lessons, nil
+}

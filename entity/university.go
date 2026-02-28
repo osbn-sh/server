@@ -3,7 +3,7 @@ package entity
 type University struct {
 	Id                 string  `json:"id"`
 	Name               string  `json:"name"`
-	NameEnglish        string  `json:"name_english"`
+	NameEnglish        *string `json:"name_english"`
 	City               string  `json:"city"`
 	Category           string  `json:"category"`
 	ImageUrl           string  `json:"image_url"`
