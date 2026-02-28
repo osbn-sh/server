@@ -2,6 +2,7 @@ package academic
 
 import (
 	"fmt"
+	"net/http"
 	"ostadbun/entity"
 
 	"github.com/gofiber/fiber/v2"
@@ -66,7 +67,14 @@ func (h Handler) Search(c *fiber.Ctx) error {
 	fmt.Println(logic)
 
 	if logic {
-		return c.Status(200).JSON(academicsData)
+
+		if len(academicsData.Professor) > 0 || len(academicsData.Lesson) > 0 || len(academicsData.Major) > 0 || len(academicsData.University) > 0 {
+
+			return c.Status(200).JSON(academicsData)
+		} else {
+			return c.Status(http.StatusNotFound).SendString("Not Found")
+		}
+
 	} else {
 		return c.Status(500).SendString("internal server error")
 	}
