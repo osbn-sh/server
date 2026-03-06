@@ -1,0 +1,3 @@
+- start
+- send mail
+- get logged-in link

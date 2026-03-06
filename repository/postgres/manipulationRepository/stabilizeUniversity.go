@@ -1,12 +1,15 @@
 package manipulationRepository
 
-import "ostadbun/entity"
+import (
+	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
+)
 
 func (d DB) StabilizeUniversity(pendingUniversityID int) (err error) {
 
 	tx, err := d.conn.Conn().Beginx()
 	if err != nil {
-		return err
+		return richerror.New("userRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on begin transaction")
 	}
 
 	defer func() {
@@ -27,7 +30,7 @@ func (d DB) StabilizeUniversity(pendingUniversityID int) (err error) {
 
 	err = tx.Get(&pending, fetchQuery, pendingUniversityID)
 	if err != nil {
-		return err
+		return richerror.New("userRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on get pending university")
 	}
 
 	insertQuery := `
@@ -56,9 +59,14 @@ func (d DB) StabilizeUniversity(pendingUniversityID int) (err error) {
 		pending.SubmittedBy,
 	)
 	if err != nil {
-		return err
+		return richerror.New("userRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on insert pending university")
 	}
 
-	_, err = tx.Exec(`DELETE FROM pending_university WHERE id = $1`, pendingUniversityID)
-	return err
+	_, errE := tx.Exec(`DELETE FROM pending_university WHERE id = $1`, pendingUniversityID)
+
+	if errE != nil {
+		return richerror.New("userRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on delete pending university")
+	}
+
+	return nil
 }

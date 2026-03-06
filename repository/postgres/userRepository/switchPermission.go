@@ -1,6 +1,9 @@
 package userRepository
 
-import "database/sql"
+import (
+	"database/sql"
+	"ostadbun/pkg/richerror"
+)
 
 func (a DB) SwitchPermission(userID, masterID int) (bool, error) {
 
@@ -14,7 +17,7 @@ func (a DB) SwitchPermission(userID, masterID int) (bool, error) {
 	err := a.conn.Conn().QueryRow(query, userID, masterID).Scan(&adminBy)
 
 	if err != nil {
-		return false, err
+		return false, richerror.New("userRepository-SwitchPermission").WithErr(err).WithKind(richerror.KindUnexpected)
 	}
 
 	return adminBy.Valid, nil

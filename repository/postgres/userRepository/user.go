@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ostadbun/entity"
 	"ostadbun/pkg/hash"
+	"ostadbun/pkg/richerror"
 )
 
 func (a DB) ExistingCheck(email string) (int, bool) {
@@ -39,7 +40,7 @@ func (a DB) RegisterUser(user entity.User) (int, error) {
 	).Scan(&id)
 
 	if err != nil {
-		return 0, err
+		return 0, richerror.New("userRepository-RegisterUser").WithErr(err).WithKind(richerror.KindUnexpected)
 	}
 
 	return id, nil

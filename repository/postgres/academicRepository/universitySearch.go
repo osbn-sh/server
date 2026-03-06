@@ -8,7 +8,7 @@ func (d DB) UniversitySearch(name string) ([]entity.University, error) {
 	var universities []entity.University
 	name = "%" + name + "%"
 	query := `
-			SELECT name, name_english, city, category, image_url,
+			SELECT id,name, name_english, city, category, image_url,
 				   description, description_english
 			FROM university
 			WHERE
@@ -32,6 +32,7 @@ func (d DB) UniversitySearch(name string) ([]entity.University, error) {
 	for rows.Next() {
 		var university entity.University
 		err := rows.Scan(
+			&university.Id,
 			&university.Name,
 			&university.NameEnglish,
 			&university.City,

@@ -7,6 +7,7 @@ import (
 )
 
 func (h Handler) SetRoutes(e *fiber.App) {
+
 	userGroup := e.Group("/user")
 
 	userGroup.Get("/logout", h.logout)
@@ -20,6 +21,13 @@ func (h Handler) SetRoutes(e *fiber.App) {
 	userGroup.Get("/level/:userid", h.Level)
 
 	userGroup.Get("/ow", middlewares.Auth(h.userSvc), middlewares.IsAdmin(h.userSvc), test)
+
+	//new group
+
+	authGroup := userGroup.Group("/auth")
+
+	authGroup.Get("/login", middlewares.Auth(h.userSvc), middlewares.IsAdmin(h.userSvc), h.Login)
+	authGroup.Post("/register", h.Register)
 
 }
 
