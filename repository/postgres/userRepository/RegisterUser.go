@@ -3,6 +3,7 @@ package userRepository
 import (
 	"ostadbun/param/userparam"
 	"ostadbun/pkg/richerror"
+	"strings"
 )
 
 func (a DB) RegisterUserByEmailAndPassword(user userparam.User) error {
@@ -12,6 +13,11 @@ func (a DB) RegisterUserByEmailAndPassword(user userparam.User) error {
 	err := a.conn.Conn().QueryRow(query, user.Email, user.Password).Err()
 
 	if err != nil {
+
+		if strings.Contains(err.Error(), "23505") {
+			return richerror.New("userRepository-RegisterUserByEmailAndPassword").WithErr(err).WithKind(richerror.KindUnexpected)
+		}
+
 		return richerror.New("userRepository-RegisterUserByEmailAndPassword").WithErr(err).WithKind(richerror.KindUnexpected)
 	}
 	return nil

@@ -30,7 +30,7 @@ func (h Handler) Register(c *fiber.Ctx) error {
 
 	if errR != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
-			"message": errR,
+			"message": errR.Error(),
 		})
 	}
 
