@@ -2,6 +2,7 @@ package academicRepository
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 func (d DB) LessonGet(id int) (*entity.Lesson, error) {
@@ -27,7 +28,7 @@ func (d DB) LessonGet(id int) (*entity.Lesson, error) {
 	)
 
 	if errT != nil {
-		return nil, errT
+		return nil, richerror.New("academicRepository-LessonGet").WithErr(errT).WithKind(richerror.KindUnexpected).WithMessage("error on query row")
 	}
 
 	return &lessons, nil

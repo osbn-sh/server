@@ -3,6 +3,7 @@ package activityRepository
 import (
 	"fmt"
 	"ostadbun/pkg/constants"
+	"ostadbun/pkg/richerror"
 )
 
 func (d DB) TriggerSetter(userid int, activity Activityconstants.ActivityTriggersName) error {
@@ -19,7 +20,7 @@ func (d DB) TriggerSetter(userid int, activity Activityconstants.ActivityTrigger
 	fmt.Println(activity)
 	// حتماً باید ارور را برگردانید تا تابع فراخوان بداند مشکل پیش آمده یا نه
 	if err != nil {
-		return err
+		return richerror.New("activityRepository-TriggerSetter").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on setting activity trigger")
 	}
 
 	return nil

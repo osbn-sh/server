@@ -2,6 +2,7 @@ package academicRepository
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 func (d DB) UniversitySearch(name string) ([]entity.University, error) {
@@ -23,7 +24,7 @@ func (d DB) UniversitySearch(name string) ([]entity.University, error) {
 	// اجرای query
 	rows, err := d.conn.Conn().Query(query, name)
 	if err != nil {
-		return nil, err
+		return nil, richerror.New("academicRepository-UniversitySearch").WithErr(err).WithKind(richerror.KindUnexpected)
 	}
 
 	defer rows.Close() // بستن نتایج پس از پایان
@@ -42,14 +43,14 @@ func (d DB) UniversitySearch(name string) ([]entity.University, error) {
 			&university.DescriptionEnglish,
 		)
 		if err != nil {
-			return nil, err // در صورت خطا در Scan، خطا را بازگردانی کن
+			return nil, richerror.New("academicRepository-UniversitySearch").WithErr(err).WithKind(richerror.KindUnexpected) // در صورت خطا در Scan، خطا را بازگردانی کن
 		}
 		universities = append(universities, university)
 	}
 
 	// بررسی خطا در حین پیمایش ردیف‌ها
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, richerror.New("academicRepository-UniversitySearch").WithErr(err).WithKind(richerror.KindUnexpected)
 	}
 
 	return universities, nil

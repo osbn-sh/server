@@ -2,6 +2,7 @@ package academicRepository
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 func (d DB) MajorGet(id int) (*entity.Major, error) {
@@ -25,7 +26,7 @@ func (d DB) MajorGet(id int) (*entity.Major, error) {
 	)
 
 	if errT != nil {
-		return nil, errT
+		return nil, richerror.New("academicRepository-MajorSearch").WithErr(errT).WithKind(richerror.KindUnexpected)
 	}
 
 	return &major, nil

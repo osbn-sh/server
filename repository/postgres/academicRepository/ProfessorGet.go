@@ -2,6 +2,7 @@ package academicRepository
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 func (d DB) ProfessorGet(id int) (*entity.Professor, error) {
@@ -27,7 +28,7 @@ func (d DB) ProfessorGet(id int) (*entity.Professor, error) {
 	)
 
 	if errT != nil {
-		return nil, errT
+		return nil, richerror.New("academicRepository-ProfessorGet").WithErr(errT).WithKind(richerror.KindUnexpected)
 	}
 
 	return &professor, nil
