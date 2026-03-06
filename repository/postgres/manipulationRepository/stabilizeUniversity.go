@@ -9,7 +9,7 @@ func (d DB) StabilizeUniversity(pendingUniversityID int) (err error) {
 
 	tx, err := d.conn.Conn().Beginx()
 	if err != nil {
-		return richerror.New("userRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on begin transaction")
+		return richerror.New("manipulationRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on begin transaction")
 	}
 
 	defer func() {
@@ -30,7 +30,7 @@ func (d DB) StabilizeUniversity(pendingUniversityID int) (err error) {
 
 	err = tx.Get(&pending, fetchQuery, pendingUniversityID)
 	if err != nil {
-		return richerror.New("userRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on get pending university")
+		return richerror.New("manipulationRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on get pending university")
 	}
 
 	insertQuery := `
@@ -59,13 +59,13 @@ func (d DB) StabilizeUniversity(pendingUniversityID int) (err error) {
 		pending.SubmittedBy,
 	)
 	if err != nil {
-		return richerror.New("userRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on insert pending university")
+		return richerror.New("manipulationRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on insert pending university")
 	}
 
 	_, errE := tx.Exec(`DELETE FROM pending_university WHERE id = $1`, pendingUniversityID)
 
 	if errE != nil {
-		return richerror.New("userRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on delete pending university")
+		return richerror.New("manipulationRepository-StabilizeUniversity").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on delete pending university")
 	}
 
 	return nil

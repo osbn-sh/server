@@ -2,6 +2,7 @@ package manipulationRepository
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 func (d DB) AddUniversityPending(university entity.PendingUniversity, userId int) error {
@@ -32,7 +33,7 @@ func (d DB) AddUniversityPending(university entity.PendingUniversity, userId int
 	).Err()
 
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-AddUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query add pending university")
 	}
 
 	return nil

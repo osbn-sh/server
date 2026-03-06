@@ -3,6 +3,7 @@ package manipulationRepository
 import (
 	"encoding/json"
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 // GetProfessorPending returns all professors with 'pending' status
@@ -28,7 +29,7 @@ func (d DB) GetProfessorPending() ([]entity.PendingProfessor, error) {
 
 	rows, err := d.conn.Conn().Query(query)
 	if err != nil {
-		return nil, err
+		return nil, richerror.New("manipulationRepository-GetProfessorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending professor")
 	}
 	defer rows.Close()
 
@@ -54,15 +55,16 @@ func (d DB) GetProfessorPending() ([]entity.PendingProfessor, error) {
 			&professor.RejectionReason,
 		)
 		if err != nil {
-			return nil, err
+			return nil, richerror.New("manipulationRepository-GetProfessorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending professor")
 		}
 
 		// تبدیل []byte به *map[string]string
 		if eduHistoryJSON != nil {
 			var eduMap json.RawMessage
 			if err := json.Unmarshal(eduHistoryJSON, &eduMap); err != nil {
-				return nil, err
+				return nil, richerror.New("manipulationRepository-GetProfessorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on unmarshal education history")
 			}
+
 			professor.EducationHistory = eduMap
 		} // اگر nil باشد، مقدار پیش‌فرض *map[string]string همان nil است
 
@@ -70,7 +72,7 @@ func (d DB) GetProfessorPending() ([]entity.PendingProfessor, error) {
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, richerror.New("manipulationRepository-GetProfessorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending professor")
 	}
 
 	return professors, nil

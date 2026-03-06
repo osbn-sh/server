@@ -2,6 +2,7 @@ package manipulationRepository
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 func (d DB) AddMajorPending(major entity.PendingMajor, userId int) error {
@@ -26,7 +27,7 @@ func (d DB) AddMajorPending(major entity.PendingMajor, userId int) error {
 	).Err()
 
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-AddUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query add pending major")
 	}
 
 	return nil

@@ -3,6 +3,7 @@ package manipulationRepository
 import (
 	"context"
 	"errors"
+	"ostadbun/pkg/richerror"
 	"time"
 )
 
@@ -30,7 +31,7 @@ func (d DB) updateMajorStatus(
 	rejectionReason *string,
 ) error {
 	if status != "approved" && status != "rejected" {
-		return ErrInvalidMajorStatus
+		return richerror.New("manipulationRepository-updateMajorStatus").WithErr(ErrInvalidMajorStatus).WithKind(richerror.KindUnexpected).WithMessage("error on update major status and not found")
 	}
 
 	query := `
@@ -51,15 +52,15 @@ func (d DB) updateMajorStatus(
 		pendingMajorID,
 	)
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-updateMajorStatus").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on update major status")
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-updateMajorStatus").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on update major status")
 	}
 	if rowsAffected == 0 {
-		return ErrMajorNotFound
+		return richerror.New("manipulationRepository-updateMajorStatus").WithErr(ErrMajorNotFound).WithKind(richerror.KindUnexpected).WithMessage("error on update major status and not found")
 	}
 
 	return nil

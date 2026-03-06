@@ -9,7 +9,7 @@ func (d DB) StabilizeMajor(pendingMajorID int) (err error) {
 
 	tx, err := d.conn.Conn().Beginx()
 	if err != nil {
-		return richerror.New("userRepository-StabilizeMajor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on begin transaction")
+		return richerror.New("manipulationRepository-StabilizeMajor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on begin transaction")
 	}
 
 	defer func() {
@@ -36,7 +36,7 @@ func (d DB) StabilizeMajor(pendingMajorID int) (err error) {
 
 	err = tx.Get(&pending, fetchQuery, pendingMajorID)
 	if err != nil {
-		return richerror.New("userRepository-StabilizeMajor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on get pending major")
+		return richerror.New("manipulationRepository-StabilizeMajor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on get pending major")
 	}
 
 	insertQuery := `
@@ -59,7 +59,7 @@ func (d DB) StabilizeMajor(pendingMajorID int) (err error) {
 		pending.SubmittedBy,
 	)
 	if err != nil {
-		return richerror.New("userRepository-StabilizeMajor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on insert pending major")
+		return richerror.New("manipulationRepository-StabilizeMajor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on insert pending major")
 	}
 
 	deleteQuery := `
@@ -69,7 +69,7 @@ func (d DB) StabilizeMajor(pendingMajorID int) (err error) {
 
 	_, errE := tx.Exec(deleteQuery, pendingMajorID)
 	if errE != nil {
-		return richerror.New("userRepository-StabilizeMajor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on delete pending major")
+		return richerror.New("manipulationRepository-StabilizeMajor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on delete pending major")
 	}
 
 	return nil
