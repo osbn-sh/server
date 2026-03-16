@@ -1,35 +1,21 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"ostadbun/database"
+	"ostadbun/repository/postgres/academicRepository"
+	"ostadbun/service/academicservice"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
+
 	_ = godotenv.Load()
-	//dbConf := database.New()
 
-	//sf := academicRepository.New(dbConf)
+	dbconf := database.New()
+	f := academicRepository.New(dbconf)
+	g := academicservice.New(*f)
 
-	//g, r := sf.MajorGet(4)
+	g.MultiDepond(6)
 
-	//err := notify.Notify("سلام کاظمم")
-
-	//fmt.Println(err)
-
-	g := f{}
-
-	http.ListenAndServe(":8080", g)
-
-}
-
-type f struct {
-}
-
-func (e f) ServeHTTP(rs http.ResponseWriter, rq *http.Request) {
-	fmt.Println(rq)
-
-	rs.WriteHeader(http.StatusOK)
 }

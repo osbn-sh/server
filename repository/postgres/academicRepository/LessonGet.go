@@ -10,7 +10,7 @@ func (d DB) LessonGet(id int) (*entity.Lesson, error) {
 
 	// Query برای جستجوی درس‌ها
 	query := `
-        SELECT name ,name_english,difficulty,description ,description_english,term
+        SELECT id,name ,name_english,difficulty,description ,description_english,term
         FROM lesson 
         WHERE 
 		 	id = $1; 
@@ -18,7 +18,7 @@ func (d DB) LessonGet(id int) (*entity.Lesson, error) {
 
 	// اجرای Query و دریافت نتایج
 	errT := d.conn.Conn().QueryRow(query, id).Scan(
-
+		&lessons.Id,
 		&lessons.Name,
 		&lessons.NameEnglish,
 		&lessons.Difficulty,

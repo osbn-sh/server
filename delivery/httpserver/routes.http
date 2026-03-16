@@ -1,0 +1,10 @@
+### test
+GET http://127.0.0.1:/
+
+### login
+POST http://127.0.0.1:3000/login/
+Content-Type: application/json
+    {
+        "username": "test",
+        "password": "1234"
+    }

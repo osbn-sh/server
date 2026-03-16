@@ -13,4 +13,6 @@ func (h Handler) SetRoutes(e *fiber.App) {
 	userGroup.Get("/major/:id", h.MajorGet)
 	userGroup.Get("/lesson/:id", h.LessonGet)
 
+	userGroup.Get("/relation/:param/:id", h.Multi)
+
 }
