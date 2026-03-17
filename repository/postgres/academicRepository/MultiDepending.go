@@ -9,7 +9,6 @@ import (
 func (d DB) MultiDepending(id int, entityTarget string) (*[]entity.MultiDepending, error) {
 	var multi []entity.MultiDepending
 
-	fmt.Println("founcing on ", entityTarget, "with id :", id)
 	// Query برای جستجوی درس‌ها
 	query := `
         SELECT *
@@ -44,5 +43,7 @@ func (d DB) MultiDepending(id int, entityTarget string) (*[]entity.MultiDependin
 	if err := rows.Err(); err != nil {
 		return nil, richerror.New("academicRepository-majorSearch").WithErr(err).WithKind(richerror.KindUnexpected)
 	}
+
+	fmt.Println(multi)
 	return &multi, nil
 }

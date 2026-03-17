@@ -5,21 +5,6 @@ import (
 	"ostadbun/entity"
 )
 
-func (s Service) MultiDependLesson(id int) (entity.MultiDepondMap, error) {
-	return s.MultiDepend(id, "lesson")
-}
-
-func (s Service) MultiDependMajor(id int) (entity.MultiDepondMap, error) {
-	return s.MultiDepend(id, "major")
-}
-
-func (s Service) MultiDependProfessor(id int) (entity.MultiDepondMap, error) {
-	return s.MultiDepend(id, "professor")
-}
-
-func (s Service) MultiDependUniversity(id int) (entity.MultiDepondMap, error) {
-	return s.MultiDepend(id, "university")
-}
 func (s Service) MultiDepend(id int, target string) (entity.MultiDepondMap, error) {
 
 	//major
@@ -32,7 +17,7 @@ func (s Service) MultiDepend(id int, target string) (entity.MultiDepondMap, erro
 		// TODO log here
 	}
 
-	fmt.Println(data)
+	fmt.Println(id, target, data)
 
 	var multi = entity.MultiDepondMap{
 		Major:      make(map[int]entity.Major),
@@ -58,7 +43,7 @@ func (s Service) MultiDepend(id int, target string) (entity.MultiDepondMap, erro
 
 func (s Service) creation(data *entity.MultiDepondMap) {
 	for a, _ := range data.Major {
-		w, e := s.MajorGet(a)
+		w, e := s.MajorGetForMulti(a)
 		if e != nil {
 			fmt.Println("error major:", e)
 
@@ -68,7 +53,7 @@ func (s Service) creation(data *entity.MultiDepondMap) {
 	}
 
 	for a, _ := range data.Lessons {
-		w, e := s.LessonGet(a)
+		w, e := s.LessonGetForMulti(a)
 		if e != nil {
 			fmt.Println("error lesson:", e)
 
@@ -78,7 +63,7 @@ func (s Service) creation(data *entity.MultiDepondMap) {
 	}
 
 	for a, _ := range data.Professor {
-		w, e := s.ProfessorGet(a)
+		w, e := s.ProfessorGetForMulti(a)
 		if e != nil {
 			fmt.Println("error professor:", e)
 
@@ -88,7 +73,7 @@ func (s Service) creation(data *entity.MultiDepondMap) {
 	}
 
 	for a, _ := range data.University {
-		w, e := s.UniversityGet(a)
+		w, e := s.UniversityGetForMulti(a)
 		if e != nil {
 			fmt.Println("error university:", e)
 
@@ -96,4 +81,63 @@ func (s Service) creation(data *entity.MultiDepondMap) {
 		}
 		data.University[a] = *w
 	}
+}
+
+func (s Service) UniversityGetForMulti(id int) (*entity.University, error) {
+	data, err := s.academicRepo.UniversityGet(id)
+	count, err := s.academicRepo.UserCountUniversity(id)
+
+	if err != nil {
+		// TODO log here
+		fmt.Println(err)
+	}
+	if data != nil {
+		data.UsersCount = count
+	}
+
+	//fmt.Println(multi)
+	return data, err
+}
+
+func (s Service) ProfessorGetForMulti(id int) (*entity.Professor, error) {
+	data, err := s.academicRepo.ProfessorGet(id)
+	count, err := s.academicRepo.UserCountProfessor(id)
+	if err != nil {
+		// TODO log here
+		fmt.Println(err)
+	}
+	if data != nil {
+
+		data.UsersCount = len(count)
+	}
+	return data, err
+}
+
+func (s Service) MajorGetForMulti(id int) (*entity.Major, error) {
+
+	data, err := s.academicRepo.MajorGet(id)
+	count, err := s.academicRepo.UserCountMajor(id)
+	if err != nil {
+		// TODO log here
+		fmt.Println(err)
+	}
+
+	if data != nil {
+		data.UsersCount = count
+	}
+	return data, err
+}
+
+func (s Service) LessonGetForMulti(id int) (*entity.Lesson, error) {
+	data, err := s.academicRepo.LessonGet(id)
+	count, err := s.academicRepo.UserCountLesson(id)
+
+	if err != nil {
+		// TODO log here
+		fmt.Println(err)
+	}
+	if data != nil {
+		data.UsersCount = len(count)
+	}
+	return data, err
 }

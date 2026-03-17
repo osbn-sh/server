@@ -1,6 +1,8 @@
 package entity
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type Professor struct {
 	Id                 string          `json:"id"`
@@ -11,4 +13,6 @@ type Professor struct {
 	EducationHistory   json.RawMessage `json:"education_history"`
 	ImageUrl           string          `json:"image_url"`
 	RegisteredBy       string          `json:"registered_by"`
+	UsersCount         int             `json:"users_count" db:"users_count"`
+	Relationships      *MultiDepondMap `json:"relationships" db:"relationships"`
 }

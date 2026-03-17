@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ostadbun/database"
 	"ostadbun/repository/postgres/academicRepository"
+	"ostadbun/service/academicservice"
 
 	"github.com/joho/godotenv"
 )
@@ -15,7 +16,9 @@ func main() {
 	dbconf := database.New()
 	f := academicRepository.New(dbconf)
 
-	a, _ := f.UserCountLesson(30)
+	g := academicservice.New(*f)
+	c, d := g.MultiDepend(22, "university")
 
-	fmt.Println(a, len(a))
+	//c, d := g.UniversityGet(22)
+	fmt.Println(c, d)
 }
