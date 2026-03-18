@@ -1,9 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"ostadbun/database"
-
-	"ostadbun/repository/postgres/studentRepository"
+	"ostadbun/repository/postgres/academicRepository"
+	academicservice "ostadbun/service/academicService"
 
 	"github.com/joho/godotenv"
 )
@@ -14,7 +15,12 @@ func main() {
 
 	dbconf := database.New()
 
-	g := studentRepository.New(dbconf)
-	g.RemovePass(6, 21)
+	g := academicRepository.New(dbconf)
+
+	t := academicservice.New(*g)
+
+	a, b := t.MultiDepend(21, "professor")
+
+	fmt.Println(a, b)
 
 }

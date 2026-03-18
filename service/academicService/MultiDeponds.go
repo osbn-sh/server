@@ -5,82 +5,82 @@ import (
 	"ostadbun/entity"
 )
 
-func (s Service) MultiDepend(id int, target string) (entity.MultiDepondMap, error) {
-
-	//major
-	//lesson
-	//university
-	//professor
-
+func (s Service) MultiDepend(id int, target string) (entity.MultiDependSlice, error) {
 	data, err := s.academicRepo.MultiDepending(id, fmt.Sprintf("%s_id", target))
 	if err != nil || data == nil {
 		// TODO log here
+		return entity.MultiDependSlice{}, err
 	}
 
 	fmt.Println(id, target, data)
 
-	var multi = entity.MultiDepondMap{
-		Major:      make(map[int]entity.Major),
-		Lessons:    make(map[int]entity.Lesson),
-		Professor:  make(map[int]entity.Professor),
-		University: make(map[int]entity.University),
+	var multi = entity.MultiDependSlice{
+		Major:      []entity.Major{},
+		Lessons:    []entity.Lesson{},
+		Professor:  []entity.Professor{},
+		University: []entity.University{},
 	}
 
 	if *data != nil {
 		for _, b := range *data {
-			multi.Professor[b.ProfessorId] = entity.Professor{}
-			multi.University[b.UniversityId] = entity.University{}
-			multi.Major[b.MajorId] = entity.Major{}
-			multi.Lessons[b.LessonId] = entity.Lesson{}
+			multi.Professor = append(multi.Professor, entity.Professor{Id: b.ProfessorId})
+			multi.Lessons = append(multi.Lessons, entity.Lesson{Id: b.LessonId})
+			multi.Major = append(multi.Major, entity.Major{Id: b.MajorId})
+			multi.University = append(multi.University, entity.University{Id: b.UniversityId})
 		}
 	}
 
-	s.creation(&multi)
+	fmt.Println(multi)
+	newMulti := s.creation(multi)
 
-	return multi, nil
+	return newMulti, nil
 
 }
 
-func (s Service) creation(data *entity.MultiDepondMap) {
-	for a, _ := range data.Major {
-		w, e := s.MajorGetForMulti(a)
+func (s Service) creation(data entity.MultiDependSlice) entity.MultiDependSlice {
+	var newData entity.MultiDependSlice
+
+	for _, a := range data.Major {
+		w, e := s.MajorGetForMulti(a.Id)
 		if e != nil {
 			fmt.Println("error major:", e)
 
 			continue
 		}
-		data.Major[a] = *w
+		newData.Major = append(newData.Major, *w)
 	}
 
-	for a, _ := range data.Lessons {
-		w, e := s.LessonGetForMulti(a)
+	for _, a := range data.Lessons {
+		w, e := s.LessonGetForMulti(a.Id)
 		if e != nil {
-			fmt.Println("error lesson:", e)
+			fmt.Println("error major:", e)
 
 			continue
 		}
-		data.Lessons[a] = *w
+		newData.Lessons = append(newData.Lessons, *w)
 	}
 
-	for a, _ := range data.Professor {
-		w, e := s.ProfessorGetForMulti(a)
+	for _, a := range data.University {
+		w, e := s.UniversityGetForMulti(a.Id)
 		if e != nil {
-			fmt.Println("error professor:", e)
+			fmt.Println("error major:", e)
 
 			continue
 		}
-		data.Professor[a] = *w
+		newData.University = append(newData.University, *w)
 	}
 
-	for a, _ := range data.University {
-		w, e := s.UniversityGetForMulti(a)
+	for _, a := range data.Professor {
+		w, e := s.ProfessorGetForMulti(a.Id)
 		if e != nil {
-			fmt.Println("error university:", e)
+			fmt.Println("error major:", e)
 
 			continue
 		}
-		data.University[a] = *w
+		newData.Professor = append(newData.Professor, *w)
 	}
+
+	return newData
 }
 
 func (s Service) UniversityGetForMulti(id int) (*entity.University, error) {
