@@ -11,6 +11,6 @@ type Major struct {
 	SubmittedBy        string          `json:"submitted_by" db:"submitted_by"`
 	Description        *string         `json:"description" db:"description"`
 	DescriptionEnglish *string         `json:"description_english" db:"description_english"`
-	UsersCount         int             `json:"users_count" db:"users_count"`
-	Relationships      *MultiDepondMap `json:"relationships" db:"relationships"`
+	UsersCount         int             `json:"users_count,omitempty" db:"users_count"`
+	Relationships      *MultiDepondMap `json:"relationships,omitempty" db:"relationships"`
 }

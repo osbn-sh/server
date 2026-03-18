@@ -1,6 +1,8 @@
 package middlewares
 
 import (
+	"fmt"
+	"ostadbun/pkg/richerror"
 	"ostadbun/service/userservice"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,8 +25,6 @@ func IsAdmin(usv userservice.User) func(c *fiber.Ctx) error {
 			}
 		}
 
-		println(userID, "3y939")
-
 		if userID == "" {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error":          "Unauthorized",
@@ -33,8 +33,9 @@ func IsAdmin(usv userservice.User) func(c *fiber.Ctx) error {
 		}
 
 		errDB := usv.AdminChecker(userID)
-		
+
 		if errDB != nil {
+			fmt.Println("e", errDB.(richerror.RichError).Operation())
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error":        "Unauthorized",
 				"row_error_db": errDB.Error(),

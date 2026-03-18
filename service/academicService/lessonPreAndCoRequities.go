@@ -1,4 +1,4 @@
-package academicservice
+package academicService
 
 import (
 	"ostadbun/entity"
@@ -17,7 +17,7 @@ func (s Service) LessonPreReq(id int) (*[]entity.Lesson, error) {
 		return nil, richerror.New("academicRepository-LessonPreReq").WithErr(errL).WithMessage("error getting lessons on pre requities")
 
 	}
-	
+
 	return lessons, err
 }
 

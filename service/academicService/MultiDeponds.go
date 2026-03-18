@@ -1,4 +1,4 @@
-package academicservice
+package academicService
 
 import (
 	"fmt"
@@ -85,59 +85,38 @@ func (s Service) creation(data *entity.MultiDepondMap) {
 
 func (s Service) UniversityGetForMulti(id int) (*entity.University, error) {
 	data, err := s.academicRepo.UniversityGet(id)
-	count, err := s.academicRepo.UserCountUniversity(id)
 
 	if err != nil {
 		// TODO log here
 		fmt.Println(err)
 	}
-	if data != nil {
-		data.UsersCount = count
-	}
-
-	//fmt.Println(multi)
 	return data, err
 }
 
 func (s Service) ProfessorGetForMulti(id int) (*entity.Professor, error) {
 	data, err := s.academicRepo.ProfessorGet(id)
-	count, err := s.academicRepo.UserCountProfessor(id)
 	if err != nil {
 		// TODO log here
 		fmt.Println(err)
 	}
-	if data != nil {
 
-		data.UsersCount = len(count)
-	}
 	return data, err
 }
 
 func (s Service) MajorGetForMulti(id int) (*entity.Major, error) {
-
 	data, err := s.academicRepo.MajorGet(id)
-	count, err := s.academicRepo.UserCountMajor(id)
 	if err != nil {
 		// TODO log here
 		fmt.Println(err)
-	}
-
-	if data != nil {
-		data.UsersCount = count
 	}
 	return data, err
 }
 
 func (s Service) LessonGetForMulti(id int) (*entity.Lesson, error) {
 	data, err := s.academicRepo.LessonGet(id)
-	count, err := s.academicRepo.UserCountLesson(id)
-
 	if err != nil {
 		// TODO log here
 		fmt.Println(err)
-	}
-	if data != nil {
-		data.UsersCount = len(count)
 	}
 	return data, err
 }

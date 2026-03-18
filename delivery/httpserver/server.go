@@ -3,11 +3,13 @@ package httpserver
 import (
 	"ostadbun/delivery/httpserver/academic"
 	"ostadbun/delivery/httpserver/manipulation"
+	"ostadbun/delivery/httpserver/student"
 	"ostadbun/delivery/httpserver/userhandler"
 	"ostadbun/pkg/enviroment"
-	"ostadbun/service/academicservice"
+	academicservice "ostadbun/service/academicService"
 	"ostadbun/service/activityService"
 	"ostadbun/service/manipulationService"
+	"ostadbun/service/studentService"
 	"ostadbun/service/userservice"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,11 +19,13 @@ import (
 
 type Server struct {
 	userService    userservice.User
+	studentService studentService.Service
 	manipulService manipulationService.Manipulation
 
 	userHandler         userhandler.Handler
 	manipulationHandler manipulation.Handler
 	academicHandler     academic.Handler
+	studentHandler      student.Handler
 }
 
 func New(
@@ -29,6 +33,7 @@ func New(
 	activity activityService.Activity,
 	manipulService manipulationService.Manipulation,
 	academicService academicservice.Service,
+	studentService studentService.Service,
 
 ) Server {
 	return Server{
@@ -37,6 +42,7 @@ func New(
 		userHandler:         userhandler.New(userService, activity),
 		manipulationHandler: manipulation.New(manipulService, userService),
 		academicHandler:     academic.New(academicService),
+		studentHandler:      student.New(academicService, studentService, userService),
 	}
 }
 
@@ -49,6 +55,7 @@ func (s Server) Serve() {
 	s.userHandler.SetRoutes(e)
 	s.manipulationHandler.SetRoutes(e)
 	s.academicHandler.SetRoutes(e)
+	s.studentHandler.SetRoutes(e)
 
 	//routes := e.Stack()
 	//

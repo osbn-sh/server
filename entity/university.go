@@ -11,6 +11,6 @@ type University struct {
 	DescriptionEnglish *string         `json:"description_english"`
 	RegisteredBy       string          `json:"registered_by"`
 	Status             string          `json:"status"`
-	UsersCount         int             `json:"users_count" db:"users_count"`
-	Relationships      *MultiDepondMap `json:"relationships" db:"relationships"`
+	UsersCount         int             `json:"users_count,omitempty" db:"users_count"`
+	Relationships      *MultiDepondMap `json:"relationships,omitempty" db:"relationships"`
 }

@@ -7,14 +7,15 @@ import (
 	"ostadbun/repository/postgres/academicRepository"
 	"ostadbun/repository/postgres/activityRepository"
 	"ostadbun/repository/postgres/manipulationRepository"
+	"ostadbun/repository/postgres/studentRepository"
 	"ostadbun/repository/postgres/userRepository"
 	"ostadbun/repository/redis/redisActivity"
 	"ostadbun/repository/redis/redisOauth"
 	"ostadbun/repository/redis/redisUser"
-	"ostadbun/service/academicservice"
+	"ostadbun/service/academicService"
 	"ostadbun/service/activityService"
-
 	"ostadbun/service/manipulationService"
+	"ostadbun/service/studentService"
 
 	"github.com/joho/godotenv"
 
@@ -52,10 +53,14 @@ func main() {
 
 	//academic
 	academicRepo := academicRepository.New(dbConf)
-	acaSVC := academicservice.New(*academicRepo)
+	acaSVC := academicService.New(*academicRepo)
+
+	//student
+	studentRepo := studentRepository.New(dbConf)
+	stuSVC := studentService.New(*studentRepo)
 
 	//engine
-	server := httpserver.New(userSvc, activSvc, maniSVC, acaSVC)
+	server := httpserver.New(userSvc, activSvc, maniSVC, acaSVC, stuSVC)
 
 	fmt.Println("listening on events ...")
 	server.Serve()

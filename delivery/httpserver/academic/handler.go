@@ -1,6 +1,8 @@
 package academic
 
-import "ostadbun/service/academicservice"
+import (
+	academicservice "ostadbun/service/academicService"
+)
 
 type Handler struct {
 	academicService academicservice.Service

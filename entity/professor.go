@@ -13,6 +13,6 @@ type Professor struct {
 	EducationHistory   json.RawMessage `json:"education_history"`
 	ImageUrl           string          `json:"image_url"`
 	RegisteredBy       string          `json:"registered_by"`
-	UsersCount         int             `json:"users_count" db:"users_count"`
-	Relationships      *MultiDepondMap `json:"relationships" db:"relationships"`
+	UsersCount         int             `json:"users_count,omitempty" db:"users_count"`
+	Relationships      *MultiDepondMap `json:"relationships,omitempty" db:"relationships"`
 }

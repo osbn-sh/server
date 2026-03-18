@@ -10,8 +10,8 @@ type Lesson struct {
 	DescriptionEnglish string          `json:"description_english"`
 	RegisteredBy       string          `json:"registered_by"`
 	IsReleased         bool            `json:"is_released"`
-	UsersCount         int             `json:"users_count" db:"users_count"`
-	Relationships      *MultiDepondMap `json:"relationships" db:"relationships"`
-	PreRequites        *[]Lesson       `json:"pre_requites" db:"pre_requites"`
-	CoRequites         *[]Lesson       `json:"co_requites" db:"co_requites"`
+	UsersCount         int             `json:"users_count,omitempty" db:"users_count"`
+	Relationships      *MultiDepondMap `json:"relationships,omitempty" db:"relationships"`
+	PreRequites        *[]Lesson       `json:"pre_requites,omitempty" db:"pre_requites"`
+	CoRequites         *[]Lesson       `json:"co_requites,omitempty" db:"co_requites"`
 }

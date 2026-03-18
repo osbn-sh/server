@@ -49,6 +49,7 @@ func Auth(u userservice.User) func(c *fiber.Ctx) error {
 				Password: password,
 			})
 
+			fmt.Println(ThisuserId, errEx)
 			if errEx != nil {
 				return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 					"message": "access denied",
