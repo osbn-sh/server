@@ -33,29 +33,29 @@ func main() {
 	redisClient := redisAdaptor.New()
 
 	//oauth
-	Oauthrds := redisOauth.New(redisClient)
-	oauth := oauthservice.NewOAuthService(Oauthrds)
+	OauthRds := redisOauth.New(redisClient)
+	oauth := oauthservice.NewOAuthService(OauthRds)
 
 	//activity
-	activRds := redisActivity.New(redisClient)
-	activRepo := activityRepository.New(dbConf)
-	activSvc := activityService.New(activRepo, activRds)
+	activeRds := redisActivity.New(redisClient)
+	activeRepo := activityRepository.New(dbConf)
+	activeSvc := activityService.New(activeRepo, activeRds)
 
 	//user
 	userRds := redisUser.New(redisClient)
 	userRepo := userRepository.New(dbConf)
-	userSvc := userservice.New(*oauth, activSvc, userRds, userRepo)
+	userSvc := userservice.New(*oauth, activeSvc, userRds, userRepo)
 
 	//manipulation
 	maniRepo := manipulationRepository.New(dbConf)
-	maniSVC := manipulationService.New(activSvc, *maniRepo)
+	maniSVC := manipulationService.New(activeSvc, *maniRepo)
 
 	//academic
 	academicRepo := academicRepository.New(dbConf)
 	acaSVC := academicservice.New(*academicRepo)
 
 	//engine
-	server := httpserver.New(userSvc, activSvc, maniSVC, acaSVC)
+	server := httpserver.New(userSvc, activeSvc, maniSVC, acaSVC)
 
 	fmt.Println("listening on events ...")
 	server.Serve()
