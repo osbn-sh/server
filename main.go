@@ -29,7 +29,6 @@ func main() {
 		fmt.Println("Error loading .env file resume and load from local env")
 	}
 	dbConf := database.New()
-
 	redisClient := redisAdaptor.New()
 
 	//oauth

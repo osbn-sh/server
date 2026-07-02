@@ -18,6 +18,7 @@ func (h Handler) logout(c *fiber.Ctx) error {
 	usrnameKey := os.Getenv("COOKIE_NAME")
 
 	cookeRemover(c, htonlyKey, usrnameKey)
+
 	return c.Redirect(os.Getenv("WEB_CLIENT"))
 }
 

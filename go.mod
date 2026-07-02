@@ -1,6 +1,6 @@
 module ostadbun
 
-go 1.24.5
+go 1.25.0
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.10
@@ -13,6 +13,7 @@ require (
 
 require (
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
+	github.com/a-h/templ v0.3.1020 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -32,6 +33,6 @@ require (
 	github.com/wneessen/go-mail v0.7.2 // indirect
 	golang.org/x/crypto v0.37.0 // indirect
 	golang.org/x/sync v0.17.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
 	golang.org/x/text v0.29.0 // indirect
 )
