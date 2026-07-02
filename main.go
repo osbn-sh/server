@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ostadbun/adaptor/redisAdaptor"
 	"ostadbun/database"
+	"ostadbun/pkg/enviroment"
 	"ostadbun/repository/postgres/academicRepository"
 	"ostadbun/repository/postgres/activityRepository"
 	"ostadbun/repository/postgres/manipulationRepository"
@@ -23,6 +24,11 @@ import (
 	"ostadbun/service/userservice"
 )
 
+// @title OSTADBUN API
+// @version 1.0
+// @description Academic database API
+// @host localhost:3000
+// @BasePath /
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -56,7 +62,15 @@ func main() {
 	//engine
 	server := httpserver.New(userSvc, activeSvc, maniSVC, acaSVC)
 
-	fmt.Println("listening on events ...")
+	fmt.Println("listening on", enviromentPrinter(), "...")
 	server.Serve()
 
+}
+
+func enviromentPrinter() string {
+	if enviroment.IsProduction() {
+		return "production mode "
+	} else {
+		return "development mode "
+	}
 }

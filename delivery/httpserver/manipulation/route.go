@@ -11,7 +11,14 @@ func (h Handler) SetRoutes(e *fiber.App) {
 	e.Get("/pending", h.GetPending)
 
 	userGroup := e.Group("/manipulation", middlewares.Auth(h.usersvc), middlewares.ManipulationPermission(h.manipulSVC))
-	//test you have basic permission
+
+	// GetUniversityPending returns all universities with 'pending' status
+	// GetUniversity godoc
+	// @Summary Checking permission
+	// @Tags permission
+	// @Produce json
+	// @Success 200 {object} any
+	// @Router manipulation/permission [get]
 	userGroup.Get("/permission", h.BasicPermission)
 
 	userGroup.Post("/lesson", h.addPendingLesson)

@@ -5,6 +5,8 @@ import (
 	"ostadbun/delivery/httpserver/academic"
 	"ostadbun/delivery/httpserver/manipulation"
 	"ostadbun/delivery/httpserver/userhandler"
+	docstempl "ostadbun/docs"
+
 	"ostadbun/pkg/enviroment"
 	renderertempl "ostadbun/pkg/rendererTempl"
 	viewindex "ostadbun/view/index"
@@ -18,6 +20,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/swaggo/fiber-swagger"
 )
 
 type Server struct {
@@ -72,6 +75,21 @@ func (s Server) Serve() {
 	e.Get("/", func(c *fiber.Ctx) error {
 
 		return renderertempl.HTML(c, viewindex.Index("0.0.1", "8.4.0", "https://github.com/osbn-sh/app", "https://github.com/osbn-sh/server"))
+	})
+
+	e.Get("/swagger/*", fiberSwagger.WrapHandler)
+
+	e.Get("/doc", func(c *fiber.Ctx) error {
+
+		Url := fmt.Sprintf("http://%s/openapi.json", c.Hostname())
+
+		return renderertempl.HTML(c, docstempl.Docs(Url))
+
+	},
+	)
+
+	e.Get("/openapi.json", func(c *fiber.Ctx) error {
+		return c.SendFile("./docs/swagger.json")
 	})
 
 	log.Fatal(e.Listen(":3000"))
