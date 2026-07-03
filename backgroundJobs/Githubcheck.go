@@ -46,7 +46,7 @@ func do(e githubcheckingversionservice.GithubCheckingVersionService) {
 
 			return
 		}
-
+		fmt.Println(response.Name)
 		errRds := e.SetClientVersion(ctx, response.Name)
 		if errRds != nil {
 			log.Printf("github redis for client sync failed: %v", err)
@@ -64,6 +64,7 @@ func do(e githubcheckingversionservice.GithubCheckingVersionService) {
 			return
 		}
 
+		fmt.Println(response.Name)
 		errRds := e.SetServerVersion(ctx, response.Name)
 		if errRds != nil {
 			log.Printf("github redis for client sync failed: %v", err)
@@ -79,7 +80,7 @@ func httpRequest(owner, repo string) (Release, error) {
 
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", owner, repo)
 
-	fmt.Println("🪏 background job starting")
+	fmt.Println("🪏 background job starting", url)
 	req, err := http.NewRequest(
 		http.MethodGet,
 		url,

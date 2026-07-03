@@ -10,6 +10,7 @@ import (
 	"ostadbun/pkg/enviroment"
 	academicservice "ostadbun/service/academicService"
 	"ostadbun/service/activityService"
+	"ostadbun/service/githubcheckingversionservice"
 	"ostadbun/service/manipulationService"
 	"ostadbun/service/studentService"
 
@@ -38,6 +39,7 @@ func New(
 	manipulService manipulationService.Manipulation,
 	academicService academicservice.Service,
 	studentService studentService.Service,
+	GithubCheckingVersionService githubcheckingversionservice.GithubCheckingVersionService,
 
 ) Server {
 	return Server{
@@ -46,7 +48,7 @@ func New(
 		userHandler:         userhandler.New(userService, activity),
 		manipulationHandler: manipulation.New(manipulService, userService),
 		academicHandler:     academic.New(academicService),
-		homeHandler:         homehandler.New(),
+		homeHandler:         homehandler.New(GithubCheckingVersionService),
 		studentHandler:      student.New(academicService, studentService, userService),
 	}
 }

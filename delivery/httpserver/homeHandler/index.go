@@ -9,5 +9,15 @@ import (
 
 func (h Handler) IndexPage(c *fiber.Ctx) error {
 
-	return renderertempl.HTML(c, viewindex.Index("0.0.1", "8.4.0", "https://github.com/osbn-sh/app", "https://github.com/osbn-sh/server"))
+	clientVersion, errClient := h.GithubCheckingVersionService.GetClientVersion(c.Context())
+	serverVersion, errServer := h.GithubCheckingVersionService.GetServerVersion(c.Context())
+
+	if errClient != nil {
+		return errClient
+	}
+
+	if errServer != nil {
+		return errServer
+	}
+	return renderertempl.HTML(c, viewindex.Index(clientVersion, serverVersion, "https://github.com/osbn-sh/app", "https://github.com/osbn-sh/server"))
 }

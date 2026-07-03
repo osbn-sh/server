@@ -68,13 +68,13 @@ func main() {
 	studentRepo := studentRepository.New(dbConf)
 	stuSVC := studentService.New(*studentRepo)
 
-	//engine
-	server := httpserver.New(userSvc, activeSvc, maniSVC, acaSVC, stuSVC)
-
-	fmt.Println("listening on", enviromentPrinter(), "...")
-
 	GithubVChRds := redisGithubVersionChecking.New(redisClient)
 	GithubCheckingVersionService := githubcheckingversionservice.New(*GithubVChRds)
+
+	//engine
+	server := httpserver.New(userSvc, activeSvc, maniSVC, acaSVC, stuSVC, *GithubCheckingVersionService)
+
+	fmt.Println("listening on", enviromentPrinter(), "...")
 
 	jobs := backgroundJobs.New(*GithubCheckingVersionService)
 
