@@ -1,12 +1,15 @@
 package manipulationRepository
 
-import "ostadbun/entity"
+import (
+	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
+)
 
 func (d DB) StabilizeLesson(pendingLessonID int) (err error) {
 
 	tx, err := d.conn.Conn().Beginx()
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-StabilizeLesson").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on begin transaction")
 	}
 
 	defer func() {
@@ -26,7 +29,7 @@ func (d DB) StabilizeLesson(pendingLessonID int) (err error) {
 
 	err = tx.Get(&pending, fetchQuery, pendingLessonID)
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-StabilizeLesson").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on get pending lesson")
 	}
 
 	insertQuery := `
@@ -55,9 +58,13 @@ func (d DB) StabilizeLesson(pendingLessonID int) (err error) {
 		true,
 	)
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-StabilizeLesson").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on insert pending lesson")
 	}
 
-	_, err = tx.Exec(`DELETE FROM pending_lesson WHERE id = $1`, pendingLessonID)
-	return err
+	_, errE := tx.Exec(`DELETE FROM pending_lesson WHERE id = $1`, pendingLessonID)
+
+	if errE != nil {
+		return richerror.New("manipulationRepository-StabilizeLesson").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on delete pending lesson")
+	}
+	return nil
 }

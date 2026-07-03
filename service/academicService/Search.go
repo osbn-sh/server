@@ -1,4 +1,4 @@
-package academicservice
+package academicService
 
 import (
 	"fmt"

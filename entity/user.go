@@ -5,6 +5,10 @@ import (
 )
 
 type User struct {
+	Id           int  `json:"id"`
+	UniversityId *int `json:"university_id"`
+	MajorId      *int `json:"major_id"`
+	AdminBy      *int `json:"admin_by"`
 	//must be hash
 	Email string `json:"email"`
 	Name  string `json:"name"`

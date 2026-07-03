@@ -2,6 +2,7 @@ package manipulationRepository
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 // GetLessonPending returns all lessons with 'pending' status
@@ -27,7 +28,7 @@ func (d DB) GetLessonPending() ([]entity.PendingLesson, error) {
 
 	rows, err := d.conn.Conn().Query(query)
 	if err != nil {
-		return nil, err
+		return nil, richerror.New("manipulationRepository-GetLessonPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending lesson")
 	}
 	defer rows.Close()
 
@@ -51,13 +52,13 @@ func (d DB) GetLessonPending() ([]entity.PendingLesson, error) {
 			&lesson.RejectionReason,
 		)
 		if err != nil {
-			return nil, err
+			return nil, richerror.New("manipulationRepository-GetLessonPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending lesson")
 		}
 		lessons = append(lessons, lesson)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, richerror.New("manipulationRepository-GetLessonPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on rows scan")
 	}
 
 	return lessons, nil

@@ -5,11 +5,13 @@ import (
 	"ostadbun/delivery/httpserver/academic"
 	homehandler "ostadbun/delivery/httpserver/homeHandler"
 	"ostadbun/delivery/httpserver/manipulation"
+	"ostadbun/delivery/httpserver/student"
 	"ostadbun/delivery/httpserver/userhandler"
 	"ostadbun/pkg/enviroment"
-	"ostadbun/service/academicservice"
+	academicservice "ostadbun/service/academicService"
 	"ostadbun/service/activityService"
 	"ostadbun/service/manipulationService"
+	"ostadbun/service/studentService"
 
 	"ostadbun/service/userservice"
 
@@ -20,12 +22,14 @@ import (
 
 type Server struct {
 	userService    userservice.User
+	studentService studentService.Service
 	manipulService manipulationService.Manipulation
 
 	userHandler         userhandler.Handler
 	manipulationHandler manipulation.Handler
 	academicHandler     academic.Handler
 	homeHandler         homehandler.Handler
+	studentHandler      student.Handler
 }
 
 func New(
@@ -33,6 +37,7 @@ func New(
 	activity activityService.Activity,
 	manipulService manipulationService.Manipulation,
 	academicService academicservice.Service,
+	studentService studentService.Service,
 
 ) Server {
 	return Server{
@@ -42,6 +47,7 @@ func New(
 		manipulationHandler: manipulation.New(manipulService, userService),
 		academicHandler:     academic.New(academicService),
 		homeHandler:         homehandler.New(),
+		studentHandler:      student.New(academicService, studentService, userService),
 	}
 }
 

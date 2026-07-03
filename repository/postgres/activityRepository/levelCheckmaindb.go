@@ -1,5 +1,7 @@
 package activityRepository
 
+import "ostadbun/pkg/richerror"
+
 func (d DB) MainStoreCalculateAndFetch(userid int) (int, error) {
 	var totalValue int
 
@@ -13,7 +15,7 @@ func (d DB) MainStoreCalculateAndFetch(userid int) (int, error) {
 	err := d.conn.Conn().QueryRow(query, userid).Scan(&totalValue)
 
 	if err != nil {
-		return -1, err
+		return -1, richerror.New("activityRepository-MainStoreCalculateAndFetch").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query row")
 	}
 
 	return totalValue, nil

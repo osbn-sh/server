@@ -17,7 +17,8 @@ type RedisOauth interface {
 }
 
 type User struct {
-	oauth    oauthservice.OAuthService
+	oauth oauthservice.OAuthService
+
 	activity activityService.Activity
 	repo     *userRepository.DB
 	redis    RedisOauth

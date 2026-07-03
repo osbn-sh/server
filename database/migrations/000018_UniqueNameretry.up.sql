@@ -1,0 +1,2 @@
+ALTER TABLE lesson DROP CONSTRAINT IF EXISTS unique_name;
+ALTER TABLE lesson DROP CONSTRAINT IF EXISTS unique_name_english;

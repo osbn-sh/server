@@ -3,6 +3,7 @@ package manipulationRepository
 import (
 	"context"
 	"errors"
+	"ostadbun/pkg/richerror"
 	"time"
 )
 
@@ -30,7 +31,7 @@ func (d DB) updateUniversityStatus(
 	rejectionReason *string,
 ) error {
 	if status != "approved" && status != "rejected" {
-		return ErrInvalidUniversityStatus
+		return richerror.New("manipulationRepository-updateUniversityStatus").WithErr(ErrInvalidUniversityStatus).WithKind(richerror.KindUnexpected).WithMessage("error on update university status and invalid")
 	}
 
 	query := `
@@ -51,15 +52,15 @@ func (d DB) updateUniversityStatus(
 		pendingUniversityID,
 	)
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-updateUniversityStatus").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on update university status ")
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-updateUniversityStatus").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on update university status ")
 	}
 	if rowsAffected == 0 {
-		return ErrUniversityNotFound
+		return richerror.New("manipulationRepository-updateUniversityStatus").WithErr(ErrUniversityNotFound).WithKind(richerror.KindUnexpected).WithMessage("error on update university status and not found")
 	}
 
 	return nil

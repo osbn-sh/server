@@ -1,27 +1,26 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"ostadbun/adaptor/redisAdaptor"
-	"ostadbun/repository/redis/redisGithubVersionChecking"
+	"ostadbun/database"
+	"ostadbun/repository/postgres/academicRepository"
+	academicservice "ostadbun/service/academicService"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("Error loading .env file resume and load from local env")
-	}
 
-	redisClient := redisAdaptor.New()
+	_ = godotenv.Load()
 
-	t := redisGithubVersionChecking.New(redisClient)
+	dbconf := database.New()
 
-	//a := t.SetClientVersion(context.Background(), "3.3.3")
-	y, a := t.GetClientVersion(context.Background())
+	g := academicRepository.New(dbconf)
 
-	fmt.Println(a, y)
+	t := academicservice.New(*g)
+
+	a, b := t.MultiDepend(21, "professor")
+
+	fmt.Println(a, b)
 
 }

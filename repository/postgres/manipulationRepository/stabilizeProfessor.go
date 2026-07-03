@@ -2,13 +2,14 @@ package manipulationRepository
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 func (d DB) StabilizeProfessor(pendingProfessorID int) (err error) {
 
 	tx, err := d.conn.Conn().Beginx()
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-StabilizeProfessor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on  on begin transaction")
 	}
 
 	defer func() {
@@ -29,7 +30,7 @@ func (d DB) StabilizeProfessor(pendingProfessorID int) (err error) {
 
 	err = tx.Get(&pending, fetchQuery, pendingProfessorID)
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-StabilizeProfessor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on get pending Professor")
 	}
 
 	insertQuery := `
@@ -56,9 +57,14 @@ func (d DB) StabilizeProfessor(pendingProfessorID int) (err error) {
 		pending.SubmittedBy,
 	)
 	if err != nil {
-		return err
+		return richerror.New("manipulationRepository-StabilizeProfessor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on insert pending Professor")
 	}
 
-	_, err = tx.Exec(`DELETE FROM pending_professor WHERE id = $1`, pendingProfessorID)
-	return err
+	_, errE := tx.Exec(`DELETE FROM pending_professor WHERE id = $1`, pendingProfessorID)
+
+	if errE != nil {
+		return richerror.New("manipulationRepository-StabilizeProfessor").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on delete pending Professor")
+	}
+
+	return nil
 }

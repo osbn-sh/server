@@ -2,6 +2,7 @@ package academicRepository
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 func (d DB) LessonSearch(name string) ([]entity.Lesson, error) {
@@ -38,14 +39,14 @@ func (d DB) LessonSearch(name string) ([]entity.Lesson, error) {
 			&lesson.DescriptionEnglish,
 		)
 		if err != nil {
-			return nil, err // در صورت خطا در Scan، خطا را بازگردانی کن
+			return nil, richerror.New("academicRepository-LessonSearch").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query row") // در صورت خطا در Scan، خطا را بازگردانی کن
 		}
 		lessons = append(lessons, lesson)
 	}
 
 	// بررسی خطا در حین پیمایش ردیف‌ها
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, richerror.New("academicRepository-LessonSearch").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query row")
 	}
 
 	return lessons, nil

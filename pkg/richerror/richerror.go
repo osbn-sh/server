@@ -1,6 +1,8 @@
 package richerror
 
-import "fmt"
+import (
+	"ostadbun/pkg/errMsgs"
+)
 
 type Kind int
 
@@ -54,17 +56,27 @@ func (r RichError) WithMeta(meta map[string]interface{}) RichError {
 	return r
 }
 
+//func (r RichError) Error() string {
+//	fmt.Println(r.message)
+//
+//	if r.message != "" && r.wrappedError != nil {
+//		return fmt.Sprintf("%s: %s", r.message, r.wrappedError.Error())
+//	}
+//	if r.message != "" {
+//		return r.message
+//	}
+//	if r.wrappedError != nil {
+//		return r.wrappedError.Error()
+//	}
+//	return "something went wrong"
+//}
+
 func (r RichError) Error() string {
-	if r.message != "" && r.wrappedError != nil {
-		return fmt.Sprintf("%s: %s", r.message, r.wrappedError.Error())
+	if r.message == "" && r.wrappedError != nil {
+		return errMsgs.TranslateErrorMessage(r.wrappedError.Error())
 	}
-	if r.message != "" {
-		return r.message
-	}
-	if r.wrappedError != nil {
-		return r.wrappedError.Error()
-	}
-	return "something went wrong"
+
+	return r.message
 }
 
 func (r RichError) Kind() Kind {

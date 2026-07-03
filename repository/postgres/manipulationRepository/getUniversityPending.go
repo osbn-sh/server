@@ -2,6 +2,7 @@ package manipulationRepository
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 func (d DB) GetUniversityPending() ([]entity.PendingUniversity, error) {
@@ -27,7 +28,7 @@ func (d DB) GetUniversityPending() ([]entity.PendingUniversity, error) {
 
 	rows, err := d.conn.Conn().Query(query)
 	if err != nil {
-		return nil, err
+		return nil, richerror.New("manipulationRepository-GetUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending university")
 	}
 	defer rows.Close()
 
@@ -52,13 +53,13 @@ func (d DB) GetUniversityPending() ([]entity.PendingUniversity, error) {
 			&university.RejectionReason,
 		)
 		if err != nil {
-			return nil, err
+			return nil, richerror.New("manipulationRepository-GetUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending university")
 		}
 		universities = append(universities, university)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, richerror.New("manipulationRepository-GetUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending university")
 	}
 
 	return universities, nil

@@ -1,6 +1,9 @@
 package manipulationRepository
 
-import "ostadbun/entity"
+import (
+	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
+)
 
 // GetMajorPending returns all majors with 'pending' status
 func (d DB) GetMajorPending() ([]entity.PendingMajor, error) {
@@ -23,7 +26,7 @@ func (d DB) GetMajorPending() ([]entity.PendingMajor, error) {
 
 	rows, err := d.conn.Conn().Query(query)
 	if err != nil {
-		return nil, err
+		return nil, richerror.New("manipulationRepository-GetMajorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending major")
 	}
 	defer rows.Close()
 
@@ -45,13 +48,13 @@ func (d DB) GetMajorPending() ([]entity.PendingMajor, error) {
 			&major.RejectionReason,
 		)
 		if err != nil {
-			return nil, err
+			return nil, richerror.New("manipulationRepository-GetMajorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending major")
 		}
 		majors = append(majors, major)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, richerror.New("manipulationRepository-GetMajorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending major")
 	}
 
 	return majors, nil
