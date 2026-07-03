@@ -1,13 +1,18 @@
 package viewindex
 
-templ Index(latestFrontVersion,latestBackVersion,linkFrontGithub,linkBackGithub string,) {
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>api.ostadbun.tech</title>
-<style>
+templ Index(latestFrontVersion, latestBackVersion, linkFrontGithub, linkBackGithub string) {
+	<!DOCTYPE html>
+	<html lang="fa" dir="rtl">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+
+			<link href="./pub/fav/light.svg" rel="icon" media="(prefers-color-scheme: light)"/>
+			<link href="./pub/fav/dark.svg" rel="icon" media="(prefers-color-scheme: dark)"/>
+			<title>استادبان</title>
+			<style>
   @font-face {
     font-family: mohammaddarvishi;
     src: url('http://localhost:3000/pub/font/spf.woff2');
@@ -167,36 +172,30 @@ templ Index(latestFrontVersion,latestBackVersion,linkFrontGithub,linkBackGithub 
     #matrix{ display:none; }
   }
 </style>
-</head>
-<body>
-
-<canvas id="matrix"></canvas>
-
-<div class="scene">
-  <div class="eyebrow">Backend Infrastructure</div>
-  <h1>ostadbun<span>/</span>api</h1>
-  <p class="tagline">
-    موتور پشت‌صحنه‌ی 
-    
-    <span style="color: var(--accent);">استادبان</span>
-    ؛ جایی که درخواست‌ها پردازش می‌شن،
-    داده‌ها جریان پیدا می‌کنن و همه‌چیز سرِ وقت به فرانت می‌رسه.
-  </p>
-  <div class="status"><span class="dot"></span>service online</div>
-
-  <div class="repos">
-    <span class="repo-tag">frontend <b>app</b> · v{latestFrontVersion}</span>
-    <span class="repo-tag">backend <b>server</b> · v{latestBackVersion}</span>
-  </div>
-
-  <div class="actions">
-    <a class="btn" href={linkFrontGithub} target="_blank" rel="noopener">آخرین نسخه‌ی فرانت ↗</a>
-    <a class="btn" href={linkBackGithub} target="_blank" rel="noopener">آخرین نسخه‌ی بک‌اند ↗</a>
-    <a class="btn primary" href="https://ostadbun.tech" target="_blank" rel="noopener">ostadbun.tech</a>
-  </div>
-</div>
-
-<script>
+		</head>
+		<body>
+			<canvas id="matrix"></canvas>
+			<div class="scene">
+				<div class="eyebrow">Backend Infrastructure</div>
+				<h1>ostadbun<span>/</span>api</h1>
+				<p class="tagline">
+					موتور پشت‌صحنه‌ی 
+					<span style="color: var(--accent);">استادبان</span>
+					؛ جایی که درخواست‌ها پردازش می‌شن،
+					داده‌ها جریان پیدا می‌کنن و همه‌چیز سرِ وقت به فرانت می‌رسه.
+				</p>
+				<div class="status"><span class="dot"></span>service online</div>
+				<div class="repos">
+					<span class="repo-tag">frontend <b>app</b> · v{ latestFrontVersion }</span>
+					<span class="repo-tag">backend <b>server</b> · v{ latestBackVersion }</span>
+				</div>
+				<div class="actions">
+					<a class="btn" href={ linkFrontGithub } target="_blank" rel="noopener">آخرین نسخه‌ی فرانت ↗</a>
+					<a class="btn" href={ linkBackGithub } target="_blank" rel="noopener">آخرین نسخه‌ی بک‌اند ↗</a>
+					<a class="btn primary" href="https://ostadbun.tech" target="_blank" rel="noopener">ostadbun.tech</a>
+				</div>
+			</div>
+			<script>
 (function(){
   const canvas = document.getElementById('matrix');
   const ctx = canvas.getContext('2d');
@@ -280,8 +279,6 @@ templ Index(latestFrontVersion,latestBackVersion,linkFrontGithub,linkBackGithub 
   }
 })();
 </script>
-
-</body>
-</html>
-
+		</body>
+	</html>
 }

@@ -3,12 +3,10 @@ package httpserver
 import (
 	"fmt"
 	"ostadbun/delivery/httpserver/academic"
+	homehandler "ostadbun/delivery/httpserver/homeHandler"
 	"ostadbun/delivery/httpserver/manipulation"
 	"ostadbun/delivery/httpserver/userhandler"
 	"ostadbun/pkg/enviroment"
-	renderertempl "ostadbun/pkg/rendererTempl"
-	viewindex "ostadbun/view/index"
-
 	"ostadbun/service/academicservice"
 	"ostadbun/service/activityService"
 	"ostadbun/service/manipulationService"
@@ -27,6 +25,7 @@ type Server struct {
 	userHandler         userhandler.Handler
 	manipulationHandler manipulation.Handler
 	academicHandler     academic.Handler
+	homeHandler         homehandler.Handler
 }
 
 func New(
@@ -42,38 +41,26 @@ func New(
 		userHandler:         userhandler.New(userService, activity),
 		manipulationHandler: manipulation.New(manipulService, userService),
 		academicHandler:     academic.New(academicService),
+		homeHandler:         homehandler.New(),
 	}
 }
 
 func (s Server) Serve() {
 
+	//starting
 	e := fiber.New()
 
+	//configurations
 	e.Use(cors.New(corsConfBuilder()))
+	e.Static("/pub", "./public")
 
+	//set handlers
 	s.userHandler.SetRoutes(e)
 	s.manipulationHandler.SetRoutes(e)
 	s.academicHandler.SetRoutes(e)
+	s.homeHandler.SetRoutes(e)
 
-	e.Static("/pub", "./public")
-
-	routes := e.Stack()
-
-	if false {
-
-		fmt.Println("Registered Routes:")
-		for _, stack := range routes {
-			for _, route := range stack {
-				fmt.Printf("  Method: %s, Path: %s\n", route.Method, route.Path)
-			}
-		}
-	}
-
-	e.Get("/", func(c *fiber.Ctx) error {
-
-		return renderertempl.HTML(c, viewindex.Index("0.0.1", "8.4.0", "https://github.com/osbn-sh/app", "https://github.com/osbn-sh/server"))
-	})
-
+	ShowRoutes(e)
 	log.Fatal(e.Listen(":3000"))
 
 }
@@ -91,6 +78,20 @@ func corsConfBuilder() cors.Config {
 	} else {
 		return cors.Config{
 			AllowOrigins: "*",
+		}
+	}
+}
+
+func ShowRoutes(e *fiber.App) {
+	routes := e.Stack()
+
+	if !enviroment.IsProduction() {
+
+		fmt.Println("Registered Routes:")
+		for _, stack := range routes {
+			for _, route := range stack {
+				fmt.Printf("  Method: %s, Path: %s\n", route.Method, route.Path)
+			}
 		}
 	}
 }
