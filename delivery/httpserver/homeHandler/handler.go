@@ -1,8 +1,13 @@
 package homehandler
 
+import "ostadbun/service/githubcheckingversionservice"
+
 type Handler struct {
+	GithubCheckingVersionService githubcheckingversionservice.GithubCheckingVersionService
 }
 
-func New() Handler {
-	return Handler{}
+func New(GithubCheckingVersionService githubcheckingversionservice.GithubCheckingVersionService) Handler {
+	return Handler{
+		GithubCheckingVersionService: GithubCheckingVersionService,
+	}
 }
