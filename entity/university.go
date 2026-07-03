@@ -11,6 +11,7 @@ type University struct {
 	DescriptionEnglish *string           `json:"description_english"`
 	RegisteredBy       string            `json:"registered_by"`
 	Status             string            `json:"status"`
+	Href               *string           `json:"href"`
 	UsersCount         int               `json:"users_count,omitempty" db:"users_count"`
 	Relationships      *MultiDependSlice `json:"relationships,omitempty" db:"relationships"`
 }

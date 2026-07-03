@@ -1,86 +1,133 @@
 package academicService
 
 import (
-	"fmt"
 	"ostadbun/entity"
+	"strconv"
 )
 
-func (s Service) UniversityGet(id int) (*entity.University, error) {
-	data, err := s.academicRepo.UniversityGet(id)
-	count, err := s.academicRepo.UserCountUniversity(id)
-	multi, err := s.MultiDepend(id, "university")
+func (s Service) UniversityGet(target string) (*entity.University, error) {
+
+	intTarget, errT := strconv.Atoi(target)
+
+	var data *entity.University
+	var err error
+
+	if errT != nil {
+		data, err = s.academicRepo.UniversityGetByHref(target)
+
+	} else {
+		data, err = s.academicRepo.UniversityGet(intTarget)
+	}
+
+	if data == nil || err != nil || data.Id < 1 {
+		return nil, err
+	}
+	count, err := s.academicRepo.UserCountUniversity(data.Id)
+	multi, err := s.MultiDepend(data.Id, "university")
 
 	if err != nil {
-		// TODO log here
-		fmt.Println(err)
-	}
-	if data != nil {
-		data.UsersCount = count
-		data.Relationships = &multi
-
+		return nil, err
 	}
 
-	//fmt.Println(multi)
-	return data, err
+	data.UsersCount = count
+	data.Relationships = &multi
+
+	return data, nil
 }
 
-func (s Service) ProfessorGet(id int) (*entity.Professor, error) {
-	data, err := s.academicRepo.ProfessorGet(id)
-	count, err := s.academicRepo.UserCountProfessor(id)
-	multi, err := s.MultiDepend(id, "professor")
-	if err != nil {
-		// TODO log here
-		fmt.Println(err)
-	}
-	if data != nil {
+func (s Service) ProfessorGet(target string) (*entity.Professor, error) {
+	intTarget, errT := strconv.Atoi(target)
 
-		data.UsersCount = len(count)
-		data.Relationships = &multi
+	var data *entity.Professor
+	var err error
+
+	if errT != nil {
+		data, err = s.academicRepo.ProfessorGetByHref(target)
+
+	} else {
+		data, err = s.academicRepo.ProfessorGet(intTarget)
 	}
-	return data, err
+
+	if data == nil || err != nil || data.Id < 1 {
+		return nil, err
+	}
+	count, err := s.academicRepo.UserCountProfessor(data.Id)
+	multi, err := s.MultiDepend(data.Id, "professor")
+
+	if err != nil {
+		return nil, err
+	}
+
+	data.UsersCount = len(count)
+	data.Relationships = &multi
+
+	return data, nil
 }
 
-func (s Service) MajorGet(id int) (*entity.Major, error) {
+func (s Service) MajorGet(target string) (*entity.Major, error) {
+	intTarget, errT := strconv.Atoi(target)
 
-	data, err := s.academicRepo.MajorGet(id)
-	count, err := s.academicRepo.UserCountMajor(id)
-	multi, err := s.MultiDepend(id, "major")
+	var data *entity.Major
+	var err error
+
+	if errT != nil {
+		data, err = s.academicRepo.MajorGetByHref(target)
+
+	} else {
+		data, err = s.academicRepo.MajorGet(intTarget)
+	}
+
+	if data == nil || err != nil || data.Id < 1 {
+		return nil, err
+	}
+	count, err := s.academicRepo.UserCountMajor(data.Id)
+	multi, err := s.MultiDepend(data.Id, "major")
+
 	if err != nil {
-		// TODO log here
-		fmt.Println(err)
+		return nil, err
 	}
 
-	if data != nil {
-		data.UsersCount = count
-		data.Relationships = &multi
-	}
-	return data, err
+	data.UsersCount = count
+	data.Relationships = &multi
+
+	return data, nil
 }
 
-func (s Service) LessonGet(id int) (*entity.Lesson, error) {
-	data, err := s.academicRepo.LessonGet(id)
-	count, err := s.academicRepo.UserCountLesson(id)
-	multi, err := s.MultiDepend(id, "lesson")
-	PreRequ, err := s.LessonPreReq(id)
-	CoRequ, err := s.LessonCoReq(id)
+func (s Service) LessonGet(target string) (*entity.Lesson, error) {
+	intTarget, errT := strconv.Atoi(target)
+
+	var data *entity.Lesson
+	var err error
+
+	if errT != nil {
+		data, err = s.academicRepo.LessonGetByHref(target)
+
+	} else {
+		data, err = s.academicRepo.LessonGet(intTarget)
+	}
+
+	if data == nil || err != nil || data.Id < 1 {
+		return nil, err
+	}
+
+	PreRequ, err := s.LessonPreReq(data.Id)
+	CoRequ, err := s.LessonCoReq(data.Id)
+	count, err := s.academicRepo.UserCountLesson(data.Id)
+	multi, err := s.MultiDepend(data.Id, "lesson")
 
 	if err != nil {
-		// TODO log here
-		fmt.Println(err)
+		return nil, err
 	}
 
-	if data != nil {
-		data.UsersCount = len(count)
-		data.Relationships = &multi
+	data.UsersCount = len(count)
+	data.Relationships = &multi
 
-		if PreRequ != nil {
-			data.PreRequites = PreRequ
-		}
-
-		if CoRequ != nil {
-			data.CoRequites = CoRequ
-		}
+	if PreRequ != nil {
+		data.PreRequites = PreRequ
 	}
 
-	return data, err
+	if CoRequ != nil {
+		data.CoRequites = CoRequ
+	}
+	return data, nil
 }

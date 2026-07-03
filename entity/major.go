@@ -12,5 +12,6 @@ type Major struct {
 	Description        *string           `json:"description" db:"description"`
 	DescriptionEnglish *string           `json:"description_english" db:"description_english"`
 	UsersCount         int               `json:"users_count,omitempty" db:"users_count"`
+	Href               *string           `json:"href"`
 	Relationships      *MultiDependSlice `json:"relationships,omitempty" db:"relationships"`
 }

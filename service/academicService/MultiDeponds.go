@@ -30,54 +30,64 @@ func (s Service) MultiDepend(id int, target string) (entity.MultiDependSlice, er
 		}
 	}
 
-	fmt.Println(multi)
-	newMulti := s.creation(multi)
+	fmt.Println(multi.University)
+	fmt.Println(multi.Professor)
+	fmt.Println(multi.Major)
+	fmt.Println(multi.Lessons)
+	newMulti := s.creation(multi, target)
 
 	return newMulti, nil
 
 }
 
-func (s Service) creation(data entity.MultiDependSlice) entity.MultiDependSlice {
+func (s Service) creation(data entity.MultiDependSlice, target string) entity.MultiDependSlice {
 	var newData entity.MultiDependSlice
 
-	for _, a := range data.Major {
-		w, e := s.MajorGetForMulti(a.Id)
-		if e != nil {
-			fmt.Println("error major:", e)
+	if target != "major" {
+		for _, a := range data.Major {
+			w, e := s.MajorGetForMulti(a.Id)
+			if e != nil {
+				fmt.Println("error major:", e)
 
-			continue
+				continue
+			}
+			newData.Major = append(newData.Major, *w)
 		}
-		newData.Major = append(newData.Major, *w)
+	}
+	if target != "lesson" {
+		for _, a := range data.Lessons {
+			w, e := s.LessonGetForMulti(a.Id)
+			if e != nil {
+				fmt.Println("error major:", e)
+
+				continue
+			}
+			newData.Lessons = append(newData.Lessons, *w)
+		}
 	}
 
-	for _, a := range data.Lessons {
-		w, e := s.LessonGetForMulti(a.Id)
-		if e != nil {
-			fmt.Println("error major:", e)
+	if target != "university" {
+		for _, a := range data.University {
+			w, e := s.UniversityGetForMulti(a.Id)
+			if e != nil {
+				fmt.Println("error major:", e)
 
-			continue
+				continue
+			}
+			newData.University = append(newData.University, *w)
 		}
-		newData.Lessons = append(newData.Lessons, *w)
 	}
 
-	for _, a := range data.University {
-		w, e := s.UniversityGetForMulti(a.Id)
-		if e != nil {
-			fmt.Println("error major:", e)
+	if target != "professor" {
+		for _, a := range data.Professor {
+			w, e := s.ProfessorGetForMulti(a.Id)
+			if e != nil {
+				fmt.Println("error major:", e)
 
-			continue
+				continue
+			}
+			newData.Professor = append(newData.Professor, *w)
 		}
-		newData.University = append(newData.University, *w)
-	}
-
-	for _, a := range data.Professor {
-		w, e := s.ProfessorGetForMulti(a.Id)
-		if e != nil {
-			fmt.Println("error major:", e)
-
-			continue
-		}
-		newData.Professor = append(newData.Professor, *w)
 	}
 
 	return newData

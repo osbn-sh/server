@@ -14,5 +14,6 @@ type Professor struct {
 	ImageUrl           string            `json:"image_url"`
 	RegisteredBy       string            `json:"registered_by"`
 	UsersCount         int               `json:"users_count,omitempty" db:"users_count"`
+	Href               *string           `json:"href"`
 	Relationships      *MultiDependSlice `json:"relationships,omitempty" db:"relationships"`
 }

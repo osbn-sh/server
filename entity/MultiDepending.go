@@ -13,8 +13,8 @@ type MultiDependMap struct {
 	Major      map[int]Major
 }
 type MultiDependSlice struct {
-	University []University
-	Lessons    []Lesson
-	Professor  []Professor
-	Major      []Major
+	University []University `json:"university,omitempty"`
+	Lessons    []Lesson     `json:"lesson,omitempty"`
+	Professor  []Professor  `json:"professor,omitempty"`
+	Major      []Major      `json:"major,omitempty"`
 }

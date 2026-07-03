@@ -10,6 +10,7 @@ type Lesson struct {
 	DescriptionEnglish string            `json:"description_english"`
 	RegisteredBy       string            `json:"registered_by"`
 	IsReleased         bool              `json:"is_released"`
+	Href               *string           `json:"href"`
 	UsersCount         int               `json:"users_count,omitempty" db:"users_count"`
 	Relationships      *MultiDependSlice `json:"relationships,omitempty" db:"relationships"`
 	PreRequites        *[]Lesson         `json:"pre_requites,omitempty" db:"pre_requites"`
