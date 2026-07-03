@@ -1,41 +1,27 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"ostadbun/pkg/richerror"
+	"ostadbun/adaptor/redisAdaptor"
+	"ostadbun/repository/redis/redisGithubVersionChecking"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file resume and load from local env")
+	}
 
-	a()
+	redisClient := redisAdaptor.New()
 
-}
+	t := redisGithubVersionChecking.New(redisClient)
 
-func a() error {
+	//a := t.SetClientVersion(context.Background(), "3.3.3")
+	y, a := t.GetClientVersion(context.Background())
 
-	err := b()
-
-	errR, _ := err.(richerror.RichError)
-
-	errF := errR.Unwrap()
-
-	errY, _ := errF.(richerror.RichError)
-
-	fmt.Println(errR.Error(), errY.Error())
-
-	return richerror.New("layertest - funca").WithErr(err).WithMessage("this is a")
-
-}
-
-func b() error {
-
-	err := c()
-	return richerror.New("").WithErr(err).WithMessage("this is b")
-
-}
-
-func c() richerror.RichError {
-
-	return richerror.New("layertest - funcc").WithMessage("this is c")
+	fmt.Println(a, y)
 
 }

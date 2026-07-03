@@ -13,3 +13,7 @@ run:
 
 dirty:
 	@migrate -path database/migrations -database "$(DB_URL)" force $(v)
+
+
+r:
+	go run cmd/example/main.go

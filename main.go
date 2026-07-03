@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"ostadbun/adaptor/redisAdaptor"
+	"ostadbun/backgroundJobs"
 	"ostadbun/database"
 	"ostadbun/pkg/enviroment"
 	"ostadbun/repository/postgres/academicRepository"
@@ -10,10 +11,12 @@ import (
 	"ostadbun/repository/postgres/manipulationRepository"
 	"ostadbun/repository/postgres/userRepository"
 	"ostadbun/repository/redis/redisActivity"
+	"ostadbun/repository/redis/redisGithubVersionChecking"
 	"ostadbun/repository/redis/redisOauth"
 	"ostadbun/repository/redis/redisUser"
 	"ostadbun/service/academicservice"
 	"ostadbun/service/activityService"
+	"ostadbun/service/githubcheckingversionservice"
 
 	"ostadbun/service/manipulationService"
 
@@ -63,6 +66,14 @@ func main() {
 	server := httpserver.New(userSvc, activeSvc, maniSVC, acaSVC)
 
 	fmt.Println("listening on", enviromentPrinter(), "...")
+
+	GithubVChRds := redisGithubVersionChecking.New(redisClient)
+	GithubCheckingVersionService := githubcheckingversionservice.New(*GithubVChRds)
+
+	jobs := backgroundJobs.New(*GithubCheckingVersionService)
+
+	jobs.Start()
+
 	server.Serve()
 
 }
