@@ -5,7 +5,6 @@ import (
 	"ostadbun/pkg/richerror"
 )
 
-// GetUniversityPending returns all universities with 'pending' status
 func (d DB) GetUniversityPending() ([]entity.PendingUniversity, error) {
 	query := `
         SELECT 

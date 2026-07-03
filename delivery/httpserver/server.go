@@ -1,7 +1,9 @@
 package httpserver
 
 import (
+	"fmt"
 	"ostadbun/delivery/httpserver/academic"
+	homehandler "ostadbun/delivery/httpserver/homeHandler"
 	"ostadbun/delivery/httpserver/manipulation"
 	"ostadbun/delivery/httpserver/student"
 	"ostadbun/delivery/httpserver/userhandler"
@@ -10,6 +12,7 @@ import (
 	"ostadbun/service/activityService"
 	"ostadbun/service/manipulationService"
 	"ostadbun/service/studentService"
+
 	"ostadbun/service/userservice"
 
 	"github.com/gofiber/fiber/v2"
@@ -25,6 +28,7 @@ type Server struct {
 	userHandler         userhandler.Handler
 	manipulationHandler manipulation.Handler
 	academicHandler     academic.Handler
+	homeHandler         homehandler.Handler
 	studentHandler      student.Handler
 }
 
@@ -42,30 +46,27 @@ func New(
 		userHandler:         userhandler.New(userService, activity),
 		manipulationHandler: manipulation.New(manipulService, userService),
 		academicHandler:     academic.New(academicService),
+		homeHandler:         homehandler.New(),
 		studentHandler:      student.New(academicService, studentService, userService),
 	}
 }
 
 func (s Server) Serve() {
 
+	//starting
 	e := fiber.New()
 
+	//configurations
 	e.Use(cors.New(corsConfBuilder()))
+	e.Static("/pub", "./public")
 
+	//set handlers
 	s.userHandler.SetRoutes(e)
 	s.manipulationHandler.SetRoutes(e)
 	s.academicHandler.SetRoutes(e)
-	s.studentHandler.SetRoutes(e)
+	s.homeHandler.SetRoutes(e)
 
-	//routes := e.Stack()
-	//
-	//fmt.Println("Registered Routes:")
-	//for _, stack := range routes {
-	//	for _, route := range stack {
-	//		fmt.Printf("  Method: %s, Path: %s\n", route.Method, route.Path)
-	//	}
-	//}
-
+	ShowRoutes(e)
 	log.Fatal(e.Listen(":3000"))
 
 }
@@ -83,6 +84,20 @@ func corsConfBuilder() cors.Config {
 	} else {
 		return cors.Config{
 			AllowOrigins: "*",
+		}
+	}
+}
+
+func ShowRoutes(e *fiber.App) {
+	routes := e.Stack()
+
+	if !enviroment.IsProduction() {
+
+		fmt.Println("Registered Routes:")
+		for _, stack := range routes {
+			for _, route := range stack {
+				fmt.Printf("  Method: %s, Path: %s\n", route.Method, route.Path)
+			}
 		}
 	}
 }

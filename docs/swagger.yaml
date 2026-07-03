@@ -1,0 +1,24 @@
+basePath: /
+host: localhost:3000
+info:
+  contact: {}
+  description: Academic database API
+  title: OSTADBUN API
+  version: "1.0"
+paths:
+  /manipulation/permission:
+    get:
+      description: Check whether the current user has manipulation permission
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+        "401":
+          description: Unauthorized
+          schema: {}
+      summary: Checking permission
+      tags:
+      - Permission
+swagger: "2.0"

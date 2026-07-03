@@ -3,17 +3,22 @@ package main
 import (
 	"fmt"
 	"ostadbun/adaptor/redisAdaptor"
+	"ostadbun/backgroundJobs"
 	"ostadbun/database"
+	"ostadbun/pkg/enviroment"
 	"ostadbun/repository/postgres/academicRepository"
 	"ostadbun/repository/postgres/activityRepository"
 	"ostadbun/repository/postgres/manipulationRepository"
 	"ostadbun/repository/postgres/studentRepository"
 	"ostadbun/repository/postgres/userRepository"
 	"ostadbun/repository/redis/redisActivity"
+	"ostadbun/repository/redis/redisGithubVersionChecking"
 	"ostadbun/repository/redis/redisOauth"
 	"ostadbun/repository/redis/redisUser"
 	"ostadbun/service/academicService"
 	"ostadbun/service/activityService"
+	"ostadbun/service/githubcheckingversionservice"
+
 	"ostadbun/service/manipulationService"
 	"ostadbun/service/studentService"
 
@@ -24,32 +29,36 @@ import (
 	"ostadbun/service/userservice"
 )
 
+// @title OSTADBUN API
+// @version 1.0
+// @description Academic database API
+// @host localhost:3000
+// @BasePath /
 func main() {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Error loading .env file resume and load from local env")
 	}
 	dbConf := database.New()
-
 	redisClient := redisAdaptor.New()
 
 	//oauth
-	Oauthrds := redisOauth.New(redisClient)
-	oauth := oauthservice.NewOAuthService(Oauthrds)
+	OauthRds := redisOauth.New(redisClient)
+	oauth := oauthservice.NewOAuthService(OauthRds)
 
 	//activity
-	activRds := redisActivity.New(redisClient)
-	activRepo := activityRepository.New(dbConf)
-	activSvc := activityService.New(activRepo, activRds)
+	activeRds := redisActivity.New(redisClient)
+	activeRepo := activityRepository.New(dbConf)
+	activeSvc := activityService.New(activeRepo, activeRds)
 
 	//user
 	userRds := redisUser.New(redisClient)
 	userRepo := userRepository.New(dbConf)
-	userSvc := userservice.New(*oauth, activSvc, userRds, userRepo)
+	userSvc := userservice.New(*oauth, activeSvc, userRds, userRepo)
 
 	//manipulation
 	maniRepo := manipulationRepository.New(dbConf)
-	maniSVC := manipulationService.New(activSvc, *maniRepo)
+	maniSVC := manipulationService.New(activeSvc, *maniRepo)
 
 	//academic
 	academicRepo := academicRepository.New(dbConf)
@@ -60,9 +69,25 @@ func main() {
 	stuSVC := studentService.New(*studentRepo)
 
 	//engine
-	server := httpserver.New(userSvc, activSvc, maniSVC, acaSVC, stuSVC)
+	server := httpserver.New(userSvc, activeSvc, maniSVC, acaSVC, stuSVC)
 
-	fmt.Println("listening on events ...")
+	fmt.Println("listening on", enviromentPrinter(), "...")
+
+	GithubVChRds := redisGithubVersionChecking.New(redisClient)
+	GithubCheckingVersionService := githubcheckingversionservice.New(*GithubVChRds)
+
+	jobs := backgroundJobs.New(*GithubCheckingVersionService)
+
+	jobs.Start()
+
 	server.Serve()
 
+}
+
+func enviromentPrinter() string {
+	if enviroment.IsProduction() {
+		return "production mode "
+	} else {
+		return "development mode "
+	}
 }

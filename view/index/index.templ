@@ -1,0 +1,284 @@
+package viewindex
+
+templ Index(latestFrontVersion, latestBackVersion, linkFrontGithub, linkBackGithub string) {
+	<!DOCTYPE html>
+	<html lang="fa" dir="rtl">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+
+			<link href="./pub/fav/light.svg" rel="icon" media="(prefers-color-scheme: light)"/>
+			<link href="./pub/fav/dark.svg" rel="icon" media="(prefers-color-scheme: dark)"/>
+			<title>استادبان</title>
+			<style>
+  @font-face {
+    font-family: mohammaddarvishi;
+    src: url('http://localhost:3000/pub/font/spf.woff2');
+  }
+
+  :root{
+    --bg: #050607;
+    --fg: whitesmoke;
+    --dim: #5b6b63;
+    --accent: #37f0a3;
+    --accent-dim: #1c8f65;
+    --mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0; padding:0; width:100%; height:100%;
+    background: var(--bg);
+    color: var(--fg);
+    overflow: hidden;
+  }
+
+  body{
+    font-family: mohammaddarvishi, sans-serif;
+    font-weight: 900;
+  }
+
+  canvas#matrix{
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .scene{
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    gap: 22px;
+  }
+
+  .eyebrow{
+    font-family: var(--mono);
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--accent);
+    opacity: 0.85;
+    direction: ltr;
+  }
+
+  h1{
+    margin: 0;
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-shadow: 0 0 40px rgba(55,240,163,0.15);
+    direction: ltr;
+    font-family: var(--mono);
+    font-weight: 700;
+  }
+  h1 span{ color: var(--accent); }
+
+  .tagline{
+    font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+    color: var(--fg);
+    opacity: 0.92;
+    max-width: 640px;
+    line-height: 2;
+  }
+
+  .status{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--dim);
+    letter-spacing: 0.05em;
+    direction: ltr;
+  }
+  .status .dot{
+    display:inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-inline-end: 8px;
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  .actions{
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .btn{
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    padding: 13px 22px;
+    border-radius: 8px;
+    border: 1px solid var(--accent-dim);
+    color: var(--fg);
+    background: rgba(55,240,163,0.05);
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.15s ease;
+    direction: ltr;
+  }
+  .btn:hover{
+    background: rgba(55,240,163,0.14);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .btn.primary{
+    background: var(--accent);
+    color: #04120b;
+    border-color: var(--accent);
+  }
+  .btn.primary:hover{
+    background: #58f7b8;
+  }
+
+  .repos{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .repo-tag{
+    color: var(--dim);
+    border: 1px solid #1c2420;
+    padding: 6px 10px;
+    border-radius: 6px;
+    direction: ltr;
+  }
+  .repo-tag b{ color: var(--fg); font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce){
+    .status .dot{ animation: none; }
+    #matrix{ display:none; }
+  }
+</style>
+		</head>
+		<body>
+			<canvas id="matrix"></canvas>
+			<div class="scene">
+				<div class="eyebrow">Backend Infrastructure</div>
+				<h1>ostadbun<span>/</span>api</h1>
+				<p class="tagline">
+					موتور پشت‌صحنه‌ی 
+					<span style="color: var(--accent);">استادبان</span>
+					؛ جایی که درخواست‌ها پردازش می‌شن،
+					داده‌ها جریان پیدا می‌کنن و همه‌چیز سرِ وقت به فرانت می‌رسه.
+				</p>
+				<div class="status"><span class="dot"></span>service online</div>
+				<div class="repos">
+					<span class="repo-tag">frontend <b>app</b> · v{ latestFrontVersion }</span>
+					<span class="repo-tag">backend <b>server</b> · v{ latestBackVersion }</span>
+				</div>
+				<div class="actions">
+					<a class="btn" href={ linkFrontGithub } target="_blank" rel="noopener">آخرین نسخه‌ی فرانت ↗</a>
+					<a class="btn" href={ linkBackGithub } target="_blank" rel="noopener">آخرین نسخه‌ی بک‌اند ↗</a>
+					<a class="btn primary" href="https://ostadbun.tech" target="_blank" rel="noopener">ostadbun.tech</a>
+				</div>
+			</div>
+			<script>
+(function(){
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  let w, h, cols, rows, cellSize = 26;
+  let cells = [];
+
+  // logos rendered as simple monochrome glyphs, same visual weight as the 0/1s
+  // so they blend in and aren't easy to spot at a glance
+  const glyphs = ['0','1','0','1','0','1','0','1','Go','rs','next','react','Sv'];
+  const logoGlyphs = new Set(['Go','rs','next','react','Sv']);
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    cols = Math.ceil(w / cellSize);
+    rows = Math.ceil(h / cellSize);
+    cells = [];
+    const logoBudget = Math.max(6, Math.floor((cols * rows) * 0.006));
+    let logosPlaced = 0;
+
+    for (let i = 0; i < cols * rows; i++){
+      let isLogo = false;
+      if (logosPlaced < logoBudget && Math.random() < 0.006){
+        isLogo = true;
+        logosPlaced++;
+      }
+      cells.push({
+        glyph: isLogo
+          ? [...logoGlyphs][Math.floor(Math.random() * logoGlyphs.size)]
+          : (Math.random() < 0.5 ? '0' : '1'),
+        isLogo,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.006 + Math.random() * 0.016,
+        baseAlpha: isLogo ? (0.05 + Math.random() * 0.05) : (0.03 + Math.random() * 0.06),
+        peakAlpha: isLogo ? (0.16 + Math.random() * 0.08) : (0.14 + Math.random() * 0.22),
+        flipChance: 0.0009
+      });
+    }
+  }
+
+  function draw(t){
+    ctx.clearRect(0, 0, w, h);
+    ctx.font = `700 ${cellSize * 0.55}px ui-monospace, Menlo, Consolas, monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (let r = 0; r < rows; r++){
+      for (let c = 0; c < cols; c++){
+        const idx = r * cols + c;
+        const cell = cells[idx];
+        if (!cell) continue;
+
+        if (Math.random() < cell.flipChance && !cell.isLogo){
+          cell.glyph = cell.glyph === '0' ? '1' : '0';
+        }
+
+        const wave = (Math.sin(t * cell.speed + cell.phase) + 1) / 2;
+        const alpha = cell.baseAlpha + wave * (cell.peakAlpha - cell.baseAlpha);
+
+        ctx.fillStyle = cell.isLogo
+          ? `rgba(55, 240, 163, ${alpha})`
+          : `rgba(245, 245, 245, ${alpha})`;
+
+        ctx.fillText(
+          cell.glyph,
+          c * cellSize + cellSize / 2,
+          r * cellSize + cellSize / 2
+        );
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.addEventListener('resize', resize);
+  resize();
+  if (!reduceMotion){
+    requestAnimationFrame(draw);
+  } else {
+    draw(0);
+  }
+})();
+</script>
+		</body>
+	</html>
+}
