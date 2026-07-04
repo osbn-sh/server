@@ -30,6 +30,92 @@
                     }
                 }
             }
+        },
+        "/student/pass": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Register a lesson that the authenticated student has already passed.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student"
+                ],
+                "parameters": [
+                    {
+                        "description": "Passed lesson information",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/studentparam.StudentPassDetail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/richerror.UserReport"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/richerror.UserReport"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/richerror.UserReport"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "richerror.UserReport": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "studentparam.StudentPassDetail": {
+            "type": "object",
+            "properties": {
+                "lesson_id": {
+                    "type": "integer"
+                },
+                "major_id": {
+                    "type": "integer"
+                },
+                "professor_id": {
+                    "type": "integer"
+                },
+                "university_id": {
+                    "type": "integer"
+                }
+            }
         }
     }
 }

@@ -4,26 +4,30 @@ import (
 	"ostadbun/entity"
 )
 
-func (m Manipulation) GetPendingUniversity() ([]entity.PendingUniversity, error) {
+// GetPendingUniversity -1 all
+func (m Manipulation) GetPendingUniversity(userId int) ([]entity.PendingUniversity, error) {
 
-	return m.manipulationRepo.GetUniversityPending()
-
-}
-
-func (m Manipulation) GetPendingProfessor() ([]entity.PendingProfessor, error) {
-
-	return m.manipulationRepo.GetProfessorPending()
+	return m.manipulationRepo.GetUniversityPending(userId)
 
 }
 
-func (m Manipulation) GetPendingLesson() ([]entity.PendingLesson, error) {
+// -1 all
+func (m Manipulation) GetPendingProfessor(userId int) ([]entity.PendingProfessor, error) {
 
-	return m.manipulationRepo.GetLessonPending()
+	return m.manipulationRepo.GetProfessorPending(userId)
 
 }
 
-func (m Manipulation) GetPendingMajor() ([]entity.PendingMajor, error) {
+// -1 all
+func (m Manipulation) GetPendingLesson(userId int) ([]entity.PendingLesson, error) {
 
-	return m.manipulationRepo.GetMajorPending()
+	return m.manipulationRepo.GetLessonPending(userId)
+
+}
+
+// -1 all
+func (m Manipulation) GetPendingMajor(userId int) ([]entity.PendingMajor, error) {
+
+	return m.manipulationRepo.GetMajorPending(userId)
 
 }

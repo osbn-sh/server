@@ -8,19 +8,13 @@ import (
 )
 
 func (h Handler) SetRoutes(e *fiber.App) {
-	e.Get("/pending", h.GetPending)
 
 	userGroup := e.Group("/manipulation", middlewares.Auth(h.usersvc), middlewares.ManipulationPermission(h.manipulSVC))
+	userGroup.Get("/get-all", middlewares.IsAdmin(h.usersvc), h.GetPending)
 
-	// GetUniversityPending returns all universities with 'pending' status
-	// GetUniversity godoc
-	// @Summary Checking permission
-	// @Tags permission
-	// @Produce json
-	// @Success 200 {object} any
-	// @Router manipulation/permission [get]
+	userGroup.Get("/my-all", middlewares.Auth(h.usersvc), h.GetPending)
+
 	userGroup.Get("/permission", h.BasicPermission)
-
 	userGroup.Post("/lesson", h.addPendingLesson)
 	userGroup.Post("/university", h.addPendingUniversity)
 	userGroup.Post("/professor", h.addPendingProfessor)
@@ -30,7 +24,7 @@ func (h Handler) SetRoutes(e *fiber.App) {
 		return fmt.Sprintf("/%s/approvement/:status/:targetID", x)
 	}
 
-	userGroup.Post(approvementRoute("lesson"), h.ApprovementLessonPending)
+	userGroup.Post(approvementRoute("lesson"), middlewares.IsAdmin(h.usersvc), h.ApprovementLessonPending)
 	userGroup.Post(approvementRoute("university"), h.ApprovementUnivPending)
 	userGroup.Post(approvementRoute("professor"), h.ApprovementProfPending)
 	userGroup.Post(approvementRoute("major"), h.ApprovementMajorPending)

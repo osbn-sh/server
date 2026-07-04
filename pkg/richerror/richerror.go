@@ -225,7 +225,6 @@ type DebugReport struct {
 
 // UserReport is the minimal, safe-for-clients view.
 type UserReport struct {
-	Code    string `json:"code"`
 	Message string `json:"message"`
 }
 
@@ -243,7 +242,6 @@ func (r RichError) ToDebug() DebugReport {
 
 func (r RichError) ToUser() UserReport {
 	return UserReport{
-		Code:    r.Kind().String(),
 		Message: r.Message(),
 	}
 }
