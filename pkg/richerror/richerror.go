@@ -20,13 +20,12 @@ type frame struct {
 }
 
 type RichError struct {
-	op            Op
-	err           error
-	kind          Kind
-	message       string // internal / debug message, never shown to clients
-	publicMessage string // safe to return to end users
-	meta          map[string]interface{}
-	stack         []frame
+	op      Op
+	err     error
+	kind    Kind
+	message string
+	meta    map[string]interface{}
+	stack   []frame
 }
 
 // New starts a RichError for the given operation. Call it at every layer
@@ -66,12 +65,6 @@ func (r RichError) WithMessage(message string) RichError {
 	return r
 }
 
-// WithPublicMessage sets a message that is safe to show to the end user.
-func (r RichError) WithPublicMessage(message string) RichError {
-	r.publicMessage = message
-	return r
-}
-
 func (r RichError) WithMeta(meta map[string]interface{}) RichError {
 	newMeta := make(map[string]interface{}, len(r.meta)+len(meta))
 	for k, v := range r.meta {
@@ -101,7 +94,7 @@ func (r RichError) WithTraceID(id string) RichError {
 
 func (r RichError) Error() string {
 	if r.message != "" {
-		return r.publicMessage
+		return r.message
 	}
 	if r.err != nil {
 		var richError RichError
@@ -143,19 +136,6 @@ func (r RichError) Message() string {
 		return r.err.Error()
 	}
 	return ""
-}
-
-// PublicMessage returns the closest explicitly-set public message in the
-// chain, falling back to a translated version of the root cause.
-func (r RichError) PublicMessage() string {
-	if r.publicMessage != "" {
-		return r.publicMessage
-	}
-	var re RichError
-	if errors.As(r.err, &re) {
-		return re.PublicMessage()
-	}
-	return activeTranslator.Translate(r.RootCause())
 }
 
 func (r RichError) Operation() Op {
@@ -264,7 +244,7 @@ func (r RichError) ToDebug() DebugReport {
 func (r RichError) ToUser() UserReport {
 	return UserReport{
 		Code:    r.Kind().String(),
-		Message: r.PublicMessage(),
+		Message: r.Message(),
 	}
 }
 

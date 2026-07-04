@@ -15,29 +15,40 @@ func (h Handler) PassLessonAdd(c *fiber.Ctx) error {
 	err := c.BodyParser(&data)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		return richerror.Out(
+			richerror.New("PassAdd,delivery").WithMessage("اطلاعات ورودی اشتباه است").WithKind(richerror.KindInvalid),
+			c)
 	}
 
 	if data.LessonID < 1 || data.ProfessorID < 1 {
-		return fiber.NewError(fiber.StatusBadRequest, "lesson_id or professor_id required")
+
+		return richerror.Out(
+			richerror.New("PassAdd,delivery").WithMessage("lesson_id or professor_id required").WithKind(richerror.KindInvalid),
+			c)
 	}
 
 	userID, errN := httpstorage.Get(c, "user_id").Number()
 
 	if errN != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "user id not found",
-		})
+		return richerror.Out(
+			richerror.New("PassAdd,delivery").WithMessage("user id not found").WithKind(richerror.KindInvalid),
+			c)
 	}
 
 	user, err := h.userService.GetByID(userID)
 
 	if user.UniversityId == nil || *user.UniversityId < 1 {
-		return fiber.NewError(fiber.StatusBadRequest, "the user not register university ")
+		return richerror.Out(
+			richerror.New("PassAdd,delivery").WithMessage("the user not register university").WithKind(richerror.KindInvalid),
+			c)
+
 	}
 
 	if user.MajorId == nil || *user.MajorId < 1 {
-		return fiber.NewError(fiber.StatusBadRequest, "the user not register major ")
+		return richerror.Out(
+			richerror.New("PassAdd,delivery").WithMessage("the user not register major"),
+			c)
+
 	}
 
 	data.UniversityID = *user.UniversityId
@@ -46,18 +57,9 @@ func (h Handler) PassLessonAdd(c *fiber.Ctx) error {
 	errDOING := h.studentService.Add(userID, data)
 
 	if errDOING != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message":           errDOING.(richerror.RichError).Error(),
-			"developer_message": errDOING.(richerror.RichError).RootCause(),
-			"Message":           errDOING.(richerror.RichError).Message(),
-			"PublicMessage":     errDOING.(richerror.RichError).PublicMessage(),
-			"Kindstat":          errDOING.(richerror.RichError).Kind().HTTPStatus(),
-			"Kindstring":        errDOING.(richerror.RichError).Kind().String(),
-		})
+		return richerror.Out(errDOING, c)
 	}
-	return c.SendString("success")
 
-	//	who are you
-	//	get university lesson and
+	return c.SendString("success")
 
 }

@@ -71,6 +71,7 @@ func Auth(u userservice.User) func(c *fiber.Ctx) error {
 		ID := strconv.Itoa(userId)
 		c.Locals("user_id", ID)
 
+		fmt.Println("userId", ID)
 		return c.Next()
 
 	}
