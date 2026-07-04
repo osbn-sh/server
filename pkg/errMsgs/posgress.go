@@ -4,14 +4,14 @@ import (
 	"strings"
 )
 
-type Postgres struct {
+type ErrMsg struct {
 }
 
-func PostgreSQLErrorMessage() Postgres {
-	return Postgres{}
+func ErrorMessages() ErrMsg {
+	return ErrMsg{}
 }
 
-func (Postgres) Translate(err error) string {
+func (ErrMsg) Translate(err error) string {
 	if err == nil {
 		return "خطایی رخ داده است"
 	}

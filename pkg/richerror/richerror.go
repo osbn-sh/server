@@ -8,40 +8,6 @@ import (
 	"strings"
 )
 
-// Kind represents the category of an error (useful for mapping to HTTP
-// status codes or branching logic in calling code). Zero value means
-// "not set" — do not assign it manually.
-type Kind int
-
-const (
-	_ Kind = iota
-	KindUnexpected
-	KindInvalid
-	KindForbidden
-	KindNotFound
-	KindUnauthorized
-	KindConflict
-)
-
-func (k Kind) String() string {
-	switch k {
-	case KindInvalid:
-		return "INVALID"
-	case KindForbidden:
-		return "FORBIDDEN"
-	case KindNotFound:
-		return "NOT_FOUND"
-	case KindUnauthorized:
-		return "UNAUTHORIZED"
-	case KindConflict:
-		return "CONFLICT"
-	case KindUnexpected:
-		return "UNEXPECTED"
-	default:
-		return "UNKNOWN"
-	}
-}
-
 // Op identifies the operation/layer producing the error, e.g.
 // "userRepository.RegisterUserByEmailAndPassword".
 type Op string
@@ -135,10 +101,11 @@ func (r RichError) WithTraceID(id string) RichError {
 
 func (r RichError) Error() string {
 	if r.message != "" {
-		return r.message
+		return r.publicMessage
 	}
 	if r.err != nil {
-		if _, ok := r.err.(RichError); ok {
+		var richError RichError
+		if errors.As(r.err, &richError) {
 			return r.err.Error()
 		}
 		return activeTranslator.Translate(r.err)
@@ -160,7 +127,7 @@ func (r RichError) Kind() Kind {
 	if errors.As(r.err, &re) {
 		return re.Kind()
 	}
-	return KindUnexpected
+	return KindInvalid
 }
 
 // Message returns the deepest non-empty internal message in the chain.

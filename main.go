@@ -44,7 +44,7 @@ func main() {
 	dbConf := database.New()
 	redisClient := redisAdaptor.New()
 
-	richerror.SetTranslator(errMsgs.PostgreSQLErrorMessage())
+	richerror.SetTranslator(errMsgs.ErrorMessages())
 
 	//oauth
 	OauthRds := redisOauth.New(redisClient)

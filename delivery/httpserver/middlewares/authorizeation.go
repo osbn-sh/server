@@ -16,10 +16,7 @@ func Auth(u userservice.User) func(c *fiber.Ctx) error {
 
 	return func(c *fiber.Ctx) error {
 
-		fmt.Println("mid start")
 		token, IsBasicAuthMethod, err := GetAuthToken(c)
-
-		fmt.Println(token, IsBasicAuthMethod)
 		if err != nil {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"message": "access denied",
@@ -44,13 +41,11 @@ func Auth(u userservice.User) func(c *fiber.Ctx) error {
 			username := dta[0]
 			password := dta[1]
 
-			fmt.Println(username, password)
 			ThisuserId, errEx := u.IsExist(userparam.User{
 				Email:    username,
 				Password: password,
 			})
 
-			fmt.Println(ThisuserId, errEx)
 			if errEx != nil {
 				return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 					"message": "access denied",
@@ -58,8 +53,6 @@ func Auth(u userservice.User) func(c *fiber.Ctx) error {
 			}
 
 			userId = int(*ThisuserId)
-
-			fmt.Println("basic auth methud", username, password, errEx)
 
 		} else {
 
@@ -77,9 +70,7 @@ func Auth(u userservice.User) func(c *fiber.Ctx) error {
 
 		ID := strconv.Itoa(userId)
 		c.Locals("user_id", ID)
-		fmt.Println("1323", ID)
 
-		fmt.Println("mid end")
 		return c.Next()
 
 	}
@@ -103,19 +94,17 @@ func GetAuthToken(c *fiber.Ctx) (string, bool, error) {
 
 	if headerToken != "" {
 
-		fmt.Println(headerToken, "header token")
-
 		isBearer := strings.Contains(headerToken, "Bearer")
 
 		isBasic := strings.Contains(headerToken, "Basic")
 
 		if isBearer {
 			headerToken = strings.Replace(headerToken, "Bearer ", "", 1)
-			fmt.Println(headerToken, "is bearer")
+
 			return headerToken, false, nil
 		} else if isBasic {
 			headerToken = strings.Replace(headerToken, "Basic ", "", 1)
-			fmt.Println(headerToken, "is basic")
+
 			return headerToken, true, nil
 		}
 

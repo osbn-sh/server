@@ -22,10 +22,8 @@ func (d DB) AddPass(userID int, data studentparam.StudentPassDetail) error {
 	)
 
 	if errT != nil {
-		fmt.Printf("Error during AddPass operation: %v\n", errT)
-		return richerror.New("academicRepository-UpsertPass").WithErr(errT).WithKind(richerror.KindUnexpected).WithMessage("error during AddPass operation")
+		return richerror.New("academicRepository-UpsertPass").WithErr(errT)
 	}
-
 	fmt.Println(res.RowsAffected())
 	return nil
 }

@@ -47,7 +47,12 @@ func (h Handler) PassLessonAdd(c *fiber.Ctx) error {
 
 	if errDOING != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": errDOING.(richerror.RichError).Unwrap().Error(),
+			"message":           errDOING.(richerror.RichError).Error(),
+			"developer_message": errDOING.(richerror.RichError).RootCause(),
+			"Message":           errDOING.(richerror.RichError).Message(),
+			"PublicMessage":     errDOING.(richerror.RichError).PublicMessage(),
+			"Kindstat":          errDOING.(richerror.RichError).Kind().HTTPStatus(),
+			"Kindstring":        errDOING.(richerror.RichError).Kind().String(),
 		})
 	}
 	return c.SendString("success")
