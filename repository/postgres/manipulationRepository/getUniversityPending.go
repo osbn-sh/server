@@ -1,11 +1,12 @@
 package manipulationRepository
 
 import (
+	"database/sql"
 	"ostadbun/entity"
 	"ostadbun/pkg/richerror"
 )
 
-func (d DB) GetUniversityPending() ([]entity.PendingUniversity, error) {
+func (d DB) GetUniversityPending(userId int) ([]entity.PendingUniversity, error) {
 	query := `
         SELECT 
             id,
@@ -26,7 +27,17 @@ func (d DB) GetUniversityPending() ([]entity.PendingUniversity, error) {
         WHERE status = 'pending'
     `
 
-	rows, err := d.conn.Conn().Query(query)
+	var (
+		rows *sql.Rows
+		err  error
+	)
+
+	if userId > 0 {
+		query += " AND submitted_by = $1"
+		rows, err = d.conn.Conn().Query(query, userId)
+	} else {
+		rows, err = d.conn.Conn().Query(query)
+	}
 	if err != nil {
 		return nil, richerror.New("manipulationRepository-GetUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending university")
 	}

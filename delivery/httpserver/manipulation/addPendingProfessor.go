@@ -1,10 +1,12 @@
 package manipulation
 
 import (
+	"net/http"
 	"ostadbun/entity"
 	manipulationParam "ostadbun/param/manipulation"
 	notify "ostadbun/pkg/bale/notif"
 	"ostadbun/pkg/httpstorage"
+	"ostadbun/pkg/richerror"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,9 +15,9 @@ func (h Handler) addPendingProfessor(c *fiber.Ctx) error {
 
 	userId, err := httpstorage.Get(c, "user_id").Number()
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "user not found",
-		})
+		return richerror.Out(
+			richerror.New("addpendingprofessor.delivery").WithMessage("user not found").WithKind(richerror.KindInvalid),
+			c)
 	}
 
 	var acceptData manipulationParam.PendingProfessor
@@ -23,10 +25,10 @@ func (h Handler) addPendingProfessor(c *fiber.Ctx) error {
 	er := c.BodyParser(&acceptData)
 
 	if er != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error":   "error on parsing request",
-			"details": er,
-		})
+
+		return richerror.Out(
+			richerror.New("addpendingprofessor.delivery").WithMessage("error on parsing request").WithKind(richerror.KindInvalid).WithErr(er),
+			c)
 	}
 
 	data := entity.PendingProfessor{
@@ -45,6 +47,13 @@ func (h Handler) addPendingProfessor(c *fiber.Ctx) error {
 		}
 	}()
 
-	return h.manipulSVC.AddPendingProfessor(data, userId)
+	errSvc := h.manipulSVC.AddPendingProfessor(data, userId)
+
+	if errSvc != nil {
+		return richerror.Out(
+			errSvc,
+			c)
+	}
+	return c.Status(http.StatusOK).SendString("success")
 
 }

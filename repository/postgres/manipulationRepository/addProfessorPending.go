@@ -31,7 +31,7 @@ func (d DB) AddProfessorPending(professor entity.PendingProfessor, userId int) e
 	).Err()
 
 	if err != nil {
-		return richerror.New("manipulationRepository-AddUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query add pending professor")
+		return richerror.New("manipulationRepository-AddUniversityPending").WithErr(err)
 	}
 
 	return nil
