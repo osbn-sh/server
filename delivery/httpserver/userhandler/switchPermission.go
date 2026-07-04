@@ -35,16 +35,10 @@ func (h Handler) switchPermission(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(errSwitch.Error())
 	}
 
-	var triggerErr error
 	if isAdminNow {
-		triggerErr = h.activitySvc.Trigger(c.Context(), masterID, Activityconstants.TriggerMakeAdmin)
+		h.activitySvc.Trigger(c.Context(), masterID, Activityconstants.TriggerMakeAdmin)
 	} else {
-		triggerErr = h.activitySvc.Trigger(c.Context(), masterID, Activityconstants.TriggerUnmakeAdmin)
-	}
-
-	if triggerErr != nil {
-		//TODO log here
-		fmt.Println(triggerErr.Error())
+		h.activitySvc.Trigger(c.Context(), masterID, Activityconstants.TriggerUnmakeAdmin)
 	}
 
 	return c.SendString(msg(isAdminNow))

@@ -32,7 +32,7 @@ func (h Handler) StabilizingProfessor(c *fiber.Ctx) error {
 		return err
 	}
 
-	errSvc := h.manipulSVC.StabilizeProfessor(tID)
+	errSvc := h.manipulSVC.StabilizeProfessor(c, tID)
 
 	if errSvc != nil {
 		return errSvc
@@ -49,7 +49,7 @@ func (h Handler) StabilizingUniversity(c *fiber.Ctx) error {
 		return err
 	}
 
-	errSvc := h.manipulSVC.StabilizeUniversity(tID)
+	errSvc := h.manipulSVC.StabilizeUniversity(c, tID)
 
 	if errSvc != nil {
 		return errSvc
@@ -66,7 +66,7 @@ func (h Handler) StabilizingMajor(c *fiber.Ctx) error {
 		return err
 	}
 
-	errSvc := h.manipulSVC.StabilizeMajor(tID)
+	errSvc := h.manipulSVC.StabilizeMajor(c, tID)
 
 	if errSvc != nil {
 		return errSvc
