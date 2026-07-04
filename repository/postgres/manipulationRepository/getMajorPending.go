@@ -1,30 +1,43 @@
 package manipulationRepository
 
 import (
+	"database/sql"
 	"ostadbun/entity"
 	"ostadbun/pkg/richerror"
 )
 
 // GetMajorPending returns all majors with 'pending' status
-func (d DB) GetMajorPending() ([]entity.PendingMajor, error) {
+func (d DB) GetMajorPending(userId int) ([]entity.PendingMajor, error) {
 	query := `
-        SELECT 
-            id,
-            name,
-            status,
-            name_english,
-            submitted_by,
-            description,
-            submitted_at,
-            description_english,
-            approved_by,
-            approved_at,
-            rejection_reason
-        FROM pending_major
-        WHERE status = 'pending'
-    `
+	SELECT
+		id,
+		name,
+		status,
+		name_english,
+		submitted_by,
+		description,
+		submitted_at,
+		description_english,
+		approved_by,
+		approved_at,
+		rejection_reason
+	FROM pending_major
+	WHERE status = 'pending'
+`
 
-	rows, err := d.conn.Conn().Query(query)
+	var (
+		rows *sql.Rows
+		err  error
+	)
+
+	if userId > 0 {
+		query += " AND submitted_by = $1"
+		rows, err = d.conn.Conn().Query(query, userId)
+	} else {
+		rows, err = d.conn.Conn().Query(query)
+	}
+
+	//rows, err := d.conn.Conn().Query(query, userId)
 	if err != nil {
 		return nil, richerror.New("manipulationRepository-GetMajorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending major")
 	}

@@ -1,4 +1,23 @@
 basePath: /
+definitions:
+  richerror.UserReport:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  studentparam.StudentPassDetail:
+    properties:
+      lesson_id:
+        type: integer
+      major_id:
+        type: integer
+      professor_id:
+        type: integer
+      university_id:
+        type: integer
+    type: object
 host: localhost:3000
 info:
   contact: {}
@@ -21,4 +40,39 @@ paths:
       summary: Checking permission
       tags:
       - Permission
+  /student/pass:
+    post:
+      consumes:
+      - application/json
+      description: Register a lesson that the authenticated student has already passed.
+      parameters:
+      - description: Passed lesson information
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/studentparam.StudentPassDetail'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/richerror.UserReport'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/richerror.UserReport'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/richerror.UserReport'
+      security:
+      - BearerAuth: []
+      tags:
+      - Student
 swagger: "2.0"

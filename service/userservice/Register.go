@@ -1,7 +1,6 @@
 package userservice
 
 import (
-	"fmt"
 	"ostadbun/param/userparam"
 	"ostadbun/pkg/hash"
 )
@@ -32,10 +31,6 @@ func (r User) IsExist(u userparam.User) (*int64, error) {
 		Password: password,
 	}
 
-	fmt.Println("enterd into repo layer", newHashedData)
-	a, b := r.repo.GetUserByEmailAndPass(newHashedData)
-
-	fmt.Println("repo layer", a, b)
-	return a, b
+	return r.repo.GetUserByEmailAndPass(newHashedData)
 
 }

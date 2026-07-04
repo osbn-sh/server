@@ -23,11 +23,7 @@ func (h Handler) Multi(c *fiber.Ctx) error {
 	}
 
 	f, g := h.academicService.MultiDepend(id_int, param)
-
-	//return c.JSON(fiber.Map{
-	//	"p": param,
-	//	"i": id,
-	//})
+	
 	if g != nil {
 		return c.SendString("error")
 	}

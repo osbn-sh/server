@@ -8,40 +8,6 @@ import (
 	"strings"
 )
 
-// Kind represents the category of an error (useful for mapping to HTTP
-// status codes or branching logic in calling code). Zero value means
-// "not set" — do not assign it manually.
-type Kind int
-
-const (
-	_ Kind = iota
-	KindUnexpected
-	KindInvalid
-	KindForbidden
-	KindNotFound
-	KindUnauthorized
-	KindConflict
-)
-
-func (k Kind) String() string {
-	switch k {
-	case KindInvalid:
-		return "INVALID"
-	case KindForbidden:
-		return "FORBIDDEN"
-	case KindNotFound:
-		return "NOT_FOUND"
-	case KindUnauthorized:
-		return "UNAUTHORIZED"
-	case KindConflict:
-		return "CONFLICT"
-	case KindUnexpected:
-		return "UNEXPECTED"
-	default:
-		return "UNKNOWN"
-	}
-}
-
 // Op identifies the operation/layer producing the error, e.g.
 // "userRepository.RegisterUserByEmailAndPassword".
 type Op string
@@ -54,13 +20,12 @@ type frame struct {
 }
 
 type RichError struct {
-	op            Op
-	err           error
-	kind          Kind
-	message       string // internal / debug message, never shown to clients
-	publicMessage string // safe to return to end users
-	meta          map[string]interface{}
-	stack         []frame
+	op      Op
+	err     error
+	kind    Kind
+	message string
+	meta    map[string]interface{}
+	stack   []frame
 }
 
 // New starts a RichError for the given operation. Call it at every layer
@@ -100,12 +65,6 @@ func (r RichError) WithMessage(message string) RichError {
 	return r
 }
 
-// WithPublicMessage sets a message that is safe to show to the end user.
-func (r RichError) WithPublicMessage(message string) RichError {
-	r.publicMessage = message
-	return r
-}
-
 func (r RichError) WithMeta(meta map[string]interface{}) RichError {
 	newMeta := make(map[string]interface{}, len(r.meta)+len(meta))
 	for k, v := range r.meta {
@@ -138,7 +97,8 @@ func (r RichError) Error() string {
 		return r.message
 	}
 	if r.err != nil {
-		if _, ok := r.err.(RichError); ok {
+		var richError RichError
+		if errors.As(r.err, &richError) {
 			return r.err.Error()
 		}
 		return activeTranslator.Translate(r.err)
@@ -160,7 +120,7 @@ func (r RichError) Kind() Kind {
 	if errors.As(r.err, &re) {
 		return re.Kind()
 	}
-	return KindUnexpected
+	return KindInvalid
 }
 
 // Message returns the deepest non-empty internal message in the chain.
@@ -176,19 +136,6 @@ func (r RichError) Message() string {
 		return r.err.Error()
 	}
 	return ""
-}
-
-// PublicMessage returns the closest explicitly-set public message in the
-// chain, falling back to a translated version of the root cause.
-func (r RichError) PublicMessage() string {
-	if r.publicMessage != "" {
-		return r.publicMessage
-	}
-	var re RichError
-	if errors.As(r.err, &re) {
-		return re.PublicMessage()
-	}
-	return activeTranslator.Translate(r.RootCause())
 }
 
 func (r RichError) Operation() Op {
@@ -278,7 +225,6 @@ type DebugReport struct {
 
 // UserReport is the minimal, safe-for-clients view.
 type UserReport struct {
-	Code    string `json:"code"`
 	Message string `json:"message"`
 }
 
@@ -296,8 +242,7 @@ func (r RichError) ToDebug() DebugReport {
 
 func (r RichError) ToUser() UserReport {
 	return UserReport{
-		Code:    r.Kind().String(),
-		Message: r.PublicMessage(),
+		Message: r.Message(),
 	}
 }
 

@@ -67,6 +67,7 @@ func (s Server) Serve() {
 	s.manipulationHandler.SetRoutes(e)
 	s.academicHandler.SetRoutes(e)
 	s.homeHandler.SetRoutes(e)
+	s.studentHandler.SetRoutes(e)
 
 	ShowRoutes(e)
 	log.Fatal(e.Listen(":3000"))

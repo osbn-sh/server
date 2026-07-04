@@ -11,8 +11,5 @@ func (s Service) Remove(id, userID int) (bool, error) {
 }
 
 func (s Service) Add(userID int, student studentparam.StudentPassDetail) error {
-
-	err := s.academicRepo.AddPass(userID, student)
-
-	return err
+	return s.academicRepo.AddPass(userID, student)
 }

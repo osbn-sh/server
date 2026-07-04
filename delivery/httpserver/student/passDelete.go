@@ -7,6 +7,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// PassLessonAdd @Summary		Register a passed lesson
+// @Description	Register a lesson that the authenticated student has already passed.
+// @Tags			Student
+// @Accept			json
+// @Produce		json
+// @Security		BearerAuth
+// @Param			request	body		studentparam.StudentPassDetail	true	"Passed lesson information"
+// @Success		200		{string}	string	"success"
+// @Failure		400		{object}	richerror.UserReport
+// @Failure		401		{object}	richerror.UserReport
+// @Failure		500		{object}	richerror.UserReport
+// @Router			/student/pass [post]
 func (h Handler) PassLessonDelete(c *fiber.Ctx) error {
 
 	idStr := c.Params("id")
