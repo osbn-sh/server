@@ -1,13 +1,14 @@
 package manipulationRepository
 
 import (
+	"database/sql"
 	"encoding/json"
 	"ostadbun/entity"
 	"ostadbun/pkg/richerror"
 )
 
 // GetProfessorPending returns all professors with 'pending' status
-func (d DB) GetProfessorPending() ([]entity.PendingProfessor, error) {
+func (d DB) GetProfessorPending(userId int) ([]entity.PendingProfessor, error) {
 	query := `
         SELECT 
             id,
@@ -27,7 +28,18 @@ func (d DB) GetProfessorPending() ([]entity.PendingProfessor, error) {
         WHERE status = 'pending'
     `
 
-	rows, err := d.conn.Conn().Query(query)
+	var (
+		rows *sql.Rows
+		err  error
+	)
+
+	if userId > 0 {
+		query += " AND submitted_by = $1"
+		rows, err = d.conn.Conn().Query(query, userId)
+	} else {
+		rows, err = d.conn.Conn().Query(query)
+	}
+
 	if err != nil {
 		return nil, richerror.New("manipulationRepository-GetProfessorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending professor")
 	}

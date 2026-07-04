@@ -12,7 +12,7 @@ func (h Handler) SetRoutes(e *fiber.App) {
 	userGroup := e.Group("/manipulation", middlewares.Auth(h.usersvc), middlewares.ManipulationPermission(h.manipulSVC))
 	userGroup.Get("/get-all", middlewares.IsAdmin(h.usersvc), h.GetPending)
 
-	userGroup.Get("/my-all", middlewares.Auth(h.usersvc), h.GetPending)
+	userGroup.Get("/my-all", middlewares.Auth(h.usersvc), h.GetMyPending)
 
 	userGroup.Get("/permission", h.BasicPermission)
 	userGroup.Post("/lesson", h.addPendingLesson)

@@ -1,24 +1,24 @@
 package manipulation
 
 import (
-	"ostadbun/entity"
+	"ostadbun/pkg/httpstorage"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-type IProvide struct {
-	University []entity.PendingUniversity `json:"university,omitempty"`
-	Lesson     []entity.PendingLesson     `json:"lesson,omitempty"`
-	Professor  []entity.PendingProfessor  `json:"professor,omitempty"`
-	Major      []entity.PendingMajor      `json:"major,omitempty"`
-}
+func (h Handler) GetMyPending(c *fiber.Ctx) error {
 
-func (h Handler) GetPending(c *fiber.Ctx) error {
+	userId, err := httpstorage.Get(c, "user_id").Number()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "user not found",
+		})
+	}
 
-	uni, errU := h.manipulSVC.GetPendingUniversity(-1)
-	les, errL := h.manipulSVC.GetPendingLesson(-1)
-	prof, errP := h.manipulSVC.GetPendingProfessor(-1)
-	major, errM := h.manipulSVC.GetPendingMajor(-1)
+	uni, errU := h.manipulSVC.GetPendingUniversity(userId)
+	les, errL := h.manipulSVC.GetPendingLesson(userId)
+	prof, errP := h.manipulSVC.GetPendingProfessor(userId)
+	major, errM := h.manipulSVC.GetPendingMajor(userId)
 
 	if errM != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
