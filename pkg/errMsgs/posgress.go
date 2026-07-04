@@ -1,26 +1,66 @@
 package errMsgs
 
 import (
-	"fmt"
 	"strings"
 )
 
-func TranslateErrorMessage(errmsg string) string {
+type Postgres struct {
+}
 
-	output := errmsg
-	fmt.Println(errmsg)
+func PostgreSQLErrorMessage() Postgres {
+	return Postgres{}
+}
+
+func (Postgres) Translate(err error) string {
+	if err == nil {
+		return "خطایی رخ داده است"
+	}
+
+	errMsg := err.Error()
+
 	data := map[string]string{
-		"(SQLSTATE 23505)": "این فیلد تکراری است",
+		"SQLSTATE 23502": "یکی از فیلدهای اجباری مقداردهی نشده است",
+		"SQLSTATE 23503": "اطلاعات مرتبط یافت نشد",
+		"SQLSTATE 23505": "این فیلد تکراری است",
+		"SQLSTATE 23514": "مقدار وارد شده معتبر نیست",
+		"SQLSTATE 22001": "مقدار وارد شده بیش از حد مجاز است",
+		"SQLSTATE 22003": "عدد وارد شده خارج از محدوده مجاز است",
+		"SQLSTATE 22007": "فرمت تاریخ یا زمان نامعتبر است",
+		"SQLSTATE 22008": "مقدار تاریخ یا زمان معتبر نیست",
+		"SQLSTATE 22012": "تقسیم بر صفر امکان‌پذیر نیست",
+		"SQLSTATE 22P02": "فرمت مقدار وارد شده صحیح نیست",
+		"SQLSTATE 22P03": "مقدار باینری معتبر نیست",
+		"SQLSTATE 08001": "اتصال به پایگاه داده برقرار نشد",
+		"SQLSTATE 08003": "اتصال به پایگاه داده وجود ندارد",
+		"SQLSTATE 08006": "ارتباط با پایگاه داده قطع شد",
+		"SQLSTATE 08004": "پایگاه داده اتصال را نپذیرفت",
+		"SQLSTATE 28P01": "نام کاربری یا رمز عبور پایگاه داده اشتباه است",
+		"SQLSTATE 3D000": "پایگاه داده مورد نظر وجود ندارد",
+		"SQLSTATE 42P01": "جدول مورد نظر یافت نشد",
+		"SQLSTATE 42703": "ستون مورد نظر یافت نشد",
+		"SQLSTATE 42701": "نام ستون تکراری است",
+		"SQLSTATE 42P07": "جدول از قبل وجود دارد",
+		"SQLSTATE 42710": "شیء مورد نظر از قبل وجود دارد",
+		"SQLSTATE 42601": "خطای نگارشی در دستور SQL",
+		"SQLSTATE 42501": "دسترسی کافی برای انجام این عملیات وجود ندارد",
+		"SQLSTATE 53300": "تعداد اتصال‌های پایگاه داده بیش از حد مجاز است",
+		"SQLSTATE 53400": "تنظیمات پایگاه داده از حد مجاز عبور کرده است",
+		"SQLSTATE 53100": "فضای دیسک کافی وجود ندارد",
+		"SQLSTATE 53200": "حافظه کافی در دسترس نیست",
+		"SQLSTATE 40001": "تراکنش به دلیل تداخل لغو شد، دوباره تلاش کنید",
+		"SQLSTATE 40P01": "بن‌بست در تراکنش رخ داده است",
+		"SQLSTATE 57014": "عملیات توسط سیستم لغو شد",
+		"SQLSTATE 55P03": "منبع مورد نظر در حال استفاده است",
+		"SQLSTATE 57P01": "پایگاه داده در حال خاموش شدن است",
+		"SQLSTATE 57P03": "پایگاه داده موقتاً در دسترس نیست",
+		"SQLSTATE XX000": "خطای داخلی پایگاه داده رخ داده است",
 	}
 
 	for k, v := range data {
-		fmt.Println(k, v)
-		if strings.Contains(errmsg, k) {
-			output = v
-
-			break
+		if strings.Contains(errMsg, k) {
+			return v
 		}
 	}
 
-	return output
+	return errMsg
 }
