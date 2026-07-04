@@ -1,6 +1,7 @@
 package userhandler
 
 import (
+	"fmt"
 	"net/http"
 	"ostadbun/param/userparam"
 	"ostadbun/pkg/regexp"
@@ -19,6 +20,7 @@ func (h Handler) Register(c *fiber.Ctx) error {
 	}
 
 	valid := regexp.IsEmailValid(user.Email)
+	fmt.Println("validated")
 
 	if !valid {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{

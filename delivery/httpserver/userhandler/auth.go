@@ -4,11 +4,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (h Handler) Login(c *fiber.Ctx) error {
-
-	//h.userSvc.IsExist()
+func (h Handler) IsLogin(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
-		"success": true,
+		"success": "true",
 	})
 }

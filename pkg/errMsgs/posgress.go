@@ -8,6 +8,7 @@ import (
 func TranslateErrorMessage(errmsg string) string {
 
 	output := errmsg
+	fmt.Println(errmsg)
 	data := map[string]string{
 		"(SQLSTATE 23505)": "این فیلد تکراری است",
 	}
