@@ -2,10 +2,11 @@ package activityService
 
 import (
 	"context"
+	"fmt"
 	"ostadbun/pkg/constants"
 )
 
-func (a Activity) Trigger(ctx context.Context, userid int, activity Activityconstants.ActivityTriggersName) error {
+func (a Activity) Trigger(ctx context.Context, userid int, activity Activityconstants.ActivityTriggersName) {
 
 	defer func() {
 		errC := a.UpdateRedisCash(ctx, userid)
@@ -14,6 +15,8 @@ func (a Activity) Trigger(ctx context.Context, userid int, activity Activitycons
 		}
 	}()
 
-	return a.repo.TriggerSetter(userid, activity)
+	err := a.repo.TriggerSetter(userid, activity)
+
+	fmt.Println("⚡️Trigger :", err)
 
 }

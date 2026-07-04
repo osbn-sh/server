@@ -37,9 +37,9 @@ func (h Handler) switchPermission(c *fiber.Ctx) error {
 
 	var triggerErr error
 	if isAdminNow {
-		triggerErr = h.activitySvc.Trigger(c.Context(), masterID, Activityconstants.Trigger_UnMakeAdmin)
+		triggerErr = h.activitySvc.Trigger(c.Context(), masterID, Activityconstants.TriggerMakeAdmin)
 	} else {
-		triggerErr = h.activitySvc.Trigger(c.Context(), masterID, Activityconstants.Trigger_MakeAdmin)
+		triggerErr = h.activitySvc.Trigger(c.Context(), masterID, Activityconstants.TriggerUnmakeAdmin)
 	}
 
 	if triggerErr != nil {

@@ -17,7 +17,7 @@ func (d DB) TriggerSetter(userid int, activity Activityconstants.ActivityTrigger
 	// چون این یک دستور نوشتن (INSERT) است، از Exec استفاده می‌کنیم
 	_, err := d.conn.Conn().Exec(query, userid, activity)
 
-	fmt.Println(activity)
+	fmt.Println(activity, err)
 	// حتماً باید ارور را برگردانید تا تابع فراخوان بداند مشکل پیش آمده یا نه
 	if err != nil {
 		return richerror.New("activityRepository-TriggerSetter").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on setting activity trigger")

@@ -66,7 +66,7 @@ func (h Handler) PassLessonAdd(c *fiber.Ctx) error {
 	data.UniversityID = *user.UniversityId
 	data.MajorID = *user.MajorId
 
-	errDOING := h.studentService.Add(userID, data)
+	errDOING := h.studentService.Add(userID, data, c.Context())
 
 	if errDOING != nil {
 		return richerror.Out(errDOING, c)

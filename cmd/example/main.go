@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"ostadbun/adaptor/redisAdaptor"
 	"ostadbun/database"
-	"ostadbun/repository/postgres/academicRepository"
-	academicservice "ostadbun/service/academicService"
+	"ostadbun/repository/postgres/activityRepository"
+	"ostadbun/repository/redis/redisActivity"
+	"ostadbun/service/activityService"
 
 	"github.com/joho/godotenv"
 )
@@ -15,11 +18,16 @@ func main() {
 
 	dbconf := database.New()
 
-	g := academicRepository.New(dbconf)
+	redisClient := redisAdaptor.New()
 
-	t := academicservice.New(*g)
+	g := activityRepository.New(dbconf)
 
-	a, b := t.MultiDepend(21, "professor")
+	rds := redisActivity.New(redisClient)
+	ttt := activityService.New(g, *rds)
+
+	ctx := context.Background()
+
+	a, b := ttt.LevelCalculator(ctx, 69)
 
 	fmt.Println(a, b)
 
