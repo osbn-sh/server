@@ -6,6 +6,8 @@ import (
 	"ostadbun/backgroundJobs"
 	"ostadbun/database"
 	"ostadbun/pkg/enviroment"
+	"ostadbun/pkg/errMsgs"
+	"ostadbun/pkg/richerror"
 	"ostadbun/repository/postgres/academicRepository"
 	"ostadbun/repository/postgres/activityRepository"
 	"ostadbun/repository/postgres/manipulationRepository"
@@ -41,6 +43,8 @@ func main() {
 	}
 	dbConf := database.New()
 	redisClient := redisAdaptor.New()
+
+	richerror.SetTranslator(errMsgs.PostgreSQLErrorMessage())
 
 	//oauth
 	OauthRds := redisOauth.New(redisClient)
