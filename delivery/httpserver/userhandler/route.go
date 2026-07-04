@@ -24,10 +24,8 @@ func (h Handler) SetRoutes(e *fiber.App) {
 
 	//new group
 
-	authGroup := userGroup.Group("/auth")
-
-	authGroup.Get("/login", middlewares.Auth(h.userSvc), middlewares.IsAdmin(h.userSvc), h.Login)
-	authGroup.Post("/register", h.Register)
+	userGroup.Get("/is_login", middlewares.Auth(h.userSvc), h.IsLogin)
+	userGroup.Post("/register", h.Register)
 
 }
 
