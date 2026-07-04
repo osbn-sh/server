@@ -15,7 +15,7 @@ func (h Handler) StabilizingLesson(c *fiber.Ctx) error {
 		return err
 	}
 
-	errSvc := h.manipulSVC.StabilizeLesson(tID)
+	errSvc := h.manipulSVC.StabilizeLesson(c, tID)
 
 	if errSvc != nil {
 		return errSvc

@@ -53,7 +53,7 @@ func main() {
 	//activity
 	activeRds := redisActivity.New(redisClient)
 	activeRepo := activityRepository.New(dbConf)
-	activeSvc := activityService.New(activeRepo, activeRds)
+	activeSvc := activityService.New(activeRepo, *activeRds)
 
 	//user
 	userRds := redisUser.New(redisClient)
