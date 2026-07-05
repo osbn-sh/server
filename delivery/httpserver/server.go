@@ -70,7 +70,7 @@ func (s Server) Serve() {
 	s.studentHandler.SetRoutes(e)
 
 	ShowRoutes(e)
-	log.Fatal(e.Listen(":3000"))
+	log.Fatal(e.Listen(":8686"))
 
 }
 
