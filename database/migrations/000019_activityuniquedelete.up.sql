@@ -1,0 +1,1 @@
+ALTER TABLE activity_history DROP CONSTRAINT IF EXISTS unique_user_activity;
