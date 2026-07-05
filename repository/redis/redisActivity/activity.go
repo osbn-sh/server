@@ -19,13 +19,11 @@ func New(client *redis.Client) *RedisActivity {
 }
 
 func (o *RedisActivity) Set(ctx context.Context, userid, level int) error {
-	if level < 1 {
-		return fmt.Errorf("level must be greater than or equal to 1")
-	}
+	fmt.Println(userid, level)
 
 	key := fmt.Sprintf("user-level:%d", userid)
 
-	return o.redis.Set(ctx, key, level, time.Hour).Err()
+	return o.redis.Set(ctx, key, level, time.Hour*6).Err()
 }
 
 func (o *RedisActivity) Check(ctx context.Context, userid int) (int, error) {
