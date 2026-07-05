@@ -12,7 +12,6 @@ import (
 func ManipulationPermission(m manipulation.Manipulation) func(c *fiber.Ctx) error {
 
 	return func(c *fiber.Ctx) error {
-
 		userId, Err := httpstorage.Get(c, "user_id").Number()
 
 		if Err != nil {
@@ -22,7 +21,8 @@ func ManipulationPermission(m manipulation.Manipulation) func(c *fiber.Ctx) erro
 		level, errG := m.GetUserLevel(c.Context(), userId)
 
 		if errG != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(errG.Error())
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": errG.Error()})
+
 		}
 
 		scre := os.Getenv("BASICPERMISSIONSCORE")

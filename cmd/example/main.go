@@ -8,6 +8,7 @@ import (
 	"ostadbun/repository/postgres/activityRepository"
 	"ostadbun/repository/redis/redisActivity"
 	"ostadbun/service/activityService"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -27,8 +28,13 @@ func main() {
 
 	ctx := context.Background()
 
-	a, b := ttt.LevelCalculator(ctx, 69)
+	//ttt.Trigger(ctx, 69, Activityconstants.TriggerMakeAdmin)
 
-	fmt.Println(a, b)
+	//fmt.Print("the user level is: ")
+
+	t := time.Now()
+	fmt.Println(ttt.LevelCalculator(ctx, 69))
+
+	fmt.Println(time.Since(t))
 
 }

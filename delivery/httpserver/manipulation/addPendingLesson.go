@@ -1,10 +1,10 @@
 package manipulation
 
 import (
-	"fmt"
 	"ostadbun/entity"
 	manipulationParam "ostadbun/param/manipulation"
 	"ostadbun/pkg/httpstorage"
+	"ostadbun/pkg/richerror"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -47,6 +47,8 @@ func (h Handler) addPendingLesson(c *fiber.Ctx) error {
 
 	rs := h.manipulSVC.AddPendingLesson(data, userId)
 
-	fmt.Println(rs)
+	if rs != nil {
+		return richerror.Out(rs, c)
+	}
 	return rs
 }

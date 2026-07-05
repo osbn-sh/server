@@ -2,6 +2,7 @@ package manipulationService
 
 import (
 	"ostadbun/entity"
+	"ostadbun/pkg/richerror"
 )
 
 func (m Manipulation) AddPendingUniversity(lesson entity.PendingUniversity, userId int) error {
@@ -17,6 +18,10 @@ func (m Manipulation) AddPendingProfessor(lesson entity.PendingProfessor, userId
 }
 
 func (m Manipulation) AddPendingLesson(lesson entity.PendingLesson, userId int) error {
+
+	if lesson.Difficulty > 5 || lesson.Difficulty < 1 {
+		return richerror.New("addpendinglesson.service").WithMessage("سختی باید بین ۱ تا ۵ باشد")
+	}
 
 	return m.manipulationRepo.AddLessonPending(lesson, userId)
 

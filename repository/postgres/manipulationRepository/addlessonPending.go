@@ -30,7 +30,7 @@ func (d DB) AddLessonPending(lesson entity.PendingLesson, userId int) error {
 	).Err()
 
 	if err != nil {
-		return richerror.New("manipulationRepository-AddUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query add pending lesson")
+		return richerror.New("manipulationRepository-AddUniversityPending").WithErr(err)
 	}
 
 	return nil
