@@ -20,6 +20,11 @@ func (h Handler) SetRoutes(e *fiber.App) {
 	userGroup.Post("/professor", h.addPendingProfessor)
 	userGroup.Post("/major", h.addPendingMajor)
 
+	userGroup.Put("/lesson/:id", h.EditPendingLesson)
+	userGroup.Put("/university/:id", h.EditPendingUniversity)
+	userGroup.Put("/professor/:id", h.EditPendingProfessor)
+	userGroup.Put("/major/:id", h.EditPendingMajor)
+
 	approvementRoute := func(x string) string {
 		return fmt.Sprintf("/%s/approvement/:status/:targetID", x)
 	}

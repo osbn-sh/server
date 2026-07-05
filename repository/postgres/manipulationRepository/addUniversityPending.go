@@ -15,9 +15,11 @@ func (d DB) AddUniversityPending(university entity.PendingUniversity, userId int
             description,
             name_english,
             description_english,
+            action,
+            target_id,
             submitted_by
         ) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `
 
 	err := d.conn.Conn().QueryRow(
@@ -29,11 +31,13 @@ func (d DB) AddUniversityPending(university entity.PendingUniversity, userId int
 		university.Description,
 		university.NameEnglish,
 		university.DescriptionEnglish,
+		university.Action,
+		university.TargetId,
 		userId,
 	).Err()
 
 	if err != nil {
-		return richerror.New("manipulationRepository-AddUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query add pending university")
+		return richerror.New("manipulationRepository-AddUniversityPending").WithErr(err)
 	}
 
 	return nil

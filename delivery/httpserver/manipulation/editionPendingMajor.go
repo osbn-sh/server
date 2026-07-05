@@ -1,16 +1,24 @@
 package manipulation
 
 import (
+	"fmt"
 	"ostadbun/entity"
 	manipulationParam "ostadbun/param/manipulation"
 	notify "ostadbun/pkg/bale/notif"
 	"ostadbun/pkg/httpstorage"
 	"ostadbun/pkg/richerror"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func (h Handler) addPendingMajor(c *fiber.Ctx) error {
+func (h Handler) EditPendingMajor(c *fiber.Ctx) error {
+
+	fmt.Println("is this??🫟")
+
+	idString := c.Params("id")
+
+	idINT, err := strconv.Atoi(idString)
 
 	userId, err := httpstorage.Get(c, "user_id").Number()
 	if err != nil {
@@ -18,7 +26,7 @@ func (h Handler) addPendingMajor(c *fiber.Ctx) error {
 			"error": "user not found",
 		})
 	}
-
+	id := int64(idINT)
 	var acceptData manipulationParam.PendingMajor
 
 	er := c.BodyParser(&acceptData)
@@ -36,6 +44,8 @@ func (h Handler) addPendingMajor(c *fiber.Ctx) error {
 		DescriptionEnglish: acceptData.DescriptionEnglish,
 		Description:        acceptData.Description,
 		SubmittedBy:        int64(userId),
+		Action:             "update",
+		TargetId:           &id,
 	}
 
 	go func() {
@@ -44,6 +54,6 @@ func (h Handler) addPendingMajor(c *fiber.Ctx) error {
 		}
 	}()
 
-	return richerror.Out(h.manipulSVC.AddPendingMajor(data, userId), c)
+	return richerror.Out(h.manipulSVC.EditPendingMajor(data, userId), c)
 
 }

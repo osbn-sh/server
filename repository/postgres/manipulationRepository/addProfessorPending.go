@@ -14,9 +14,11 @@ func (d DB) AddProfessorPending(professor entity.PendingProfessor, userId int) e
             description,
             name_english,
             description_english,
+            action,
+            target_id,
             submitted_by
         ) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        VALUES ($1, $2, $3, $4, $5, $6, $7,$8,$9)
     `
 
 	err := d.conn.Conn().QueryRow(
@@ -27,6 +29,8 @@ func (d DB) AddProfessorPending(professor entity.PendingProfessor, userId int) e
 		professor.Description,
 		professor.NameEnglish,
 		professor.DescriptionEnglish,
+		professor.Action,
+		professor.TargetId,
 		userId,
 	).Err()
 

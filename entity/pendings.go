@@ -20,6 +20,8 @@ type PendingUniversity struct {
 	ApprovedBy         *int64     `json:"approved_by,omitempty" db:"approved_by"`
 	ApprovedAt         *time.Time `json:"approved_at,omitempty" db:"approved_at"`
 	RejectionReason    *string    `json:"rejection_reason,omitempty" db:"rejection_reason"`
+	Action             string     `json:"action" db:"action"`
+	TargetId           *int64     `json:"target_id" db:"target_id"`
 }
 
 type PendingProfessor struct {
@@ -36,6 +38,8 @@ type PendingProfessor struct {
 	ApprovedBy         *int64          `json:"approved_by,omitempty" db:"approved_by"`
 	ApprovedAt         *time.Time      `json:"approved_at,omitempty" db:"approved_at"`
 	RejectionReason    *string         `json:"rejection_reason,omitempty" db:"rejection_reason"`
+	Action             string          `json:"action" db:"action"`
+	TargetId           *int64          `json:"target_id" db:"target_id"`
 }
 
 type PendingLesson struct {
@@ -52,6 +56,8 @@ type PendingLesson struct {
 	ApprovedBy         *int64     `json:"approved_by,omitempty" db:"approved_by"`
 	ApprovedAt         *time.Time `json:"approved_at,omitempty" db:"approved_at"`
 	RejectionReason    *string    `json:"rejection_reason,omitempty" db:"rejection_reason"`
+	Action             string     `json:"action" db:"action"`
+	TargetId           *int64     `json:"target_id" db:"target_id"`
 }
 type PendingMajor struct {
 	Id                 int64      `json:"id" db:"id"`
@@ -65,4 +71,6 @@ type PendingMajor struct {
 	ApprovedBy         *int64     `json:"approved_by,omitempty" db:"approved_by"`
 	ApprovedAt         *time.Time `json:"approved_at,omitempty" db:"approved_at"`
 	RejectionReason    *string    `json:"rejection_reason,omitempty" db:"rejection_reason"`
+	Action             string     `json:"action" db:"action"`
+	TargetId           *int64     `json:"target_id" db:"target_id"`
 }

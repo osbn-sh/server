@@ -12,9 +12,11 @@ func (d DB) AddMajorPending(major entity.PendingMajor, userId int) error {
             description,
             name_english,
             description_english,
+			action,
+            target_id,
             submitted_by
         ) 
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES ($1, $2, $3, $4, $5,$6,$7)
     `
 
 	err := d.conn.Conn().QueryRow(
@@ -23,11 +25,13 @@ func (d DB) AddMajorPending(major entity.PendingMajor, userId int) error {
 		major.Description,
 		major.NameEnglish,
 		major.DescriptionEnglish,
+		major.Action,
+		major.TargetId,
 		userId,
 	).Err()
 
 	if err != nil {
-		return richerror.New("manipulationRepository-AddUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query add pending major")
+		return richerror.New("manipulationRepository-AddUniversityPending").WithErr(err)
 	}
 
 	return nil

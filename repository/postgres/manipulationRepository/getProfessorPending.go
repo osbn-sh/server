@@ -8,7 +8,7 @@ import (
 )
 
 // GetProfessorPending returns all professors with 'pending' status
-func (d DB) GetProfessorPending(userId int) ([]entity.PendingProfessor, error) {
+func (d DB) GetProfessorPending(Id int, filterBySubmitter bool) ([]entity.PendingProfessor, error) {
 	query := `
         SELECT 
             id,
@@ -23,7 +23,9 @@ func (d DB) GetProfessorPending(userId int) ([]entity.PendingProfessor, error) {
             description_english,
             approved_by,
             approved_at,
-            rejection_reason
+            rejection_reason,
+            action,
+            target_id
         FROM pending_professor
         WHERE status = 'pending'
     `
@@ -33,9 +35,13 @@ func (d DB) GetProfessorPending(userId int) ([]entity.PendingProfessor, error) {
 		err  error
 	)
 
-	if userId > 0 {
-		query += " AND submitted_by = $1"
-		rows, err = d.conn.Conn().Query(query, userId)
+	if Id > 0 {
+		if filterBySubmitter {
+			query += " AND submitted_by = $1"
+		} else {
+			query += " AND id = $1"
+		}
+		rows, err = d.conn.Conn().Query(query, Id)
 	} else {
 		rows, err = d.conn.Conn().Query(query)
 	}
@@ -65,6 +71,8 @@ func (d DB) GetProfessorPending(userId int) ([]entity.PendingProfessor, error) {
 			&professor.ApprovedBy,
 			&professor.ApprovedAt,
 			&professor.RejectionReason,
+			&professor.Action,
+			&professor.TargetId,
 		)
 		if err != nil {
 			return nil, richerror.New("manipulationRepository-GetProfessorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending professor")

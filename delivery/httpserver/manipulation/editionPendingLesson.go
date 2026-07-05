@@ -1,16 +1,30 @@
 package manipulation
 
 import (
+	"fmt"
 	"ostadbun/entity"
 	manipulationParam "ostadbun/param/manipulation"
-	notify "ostadbun/pkg/bale/notif"
 	"ostadbun/pkg/httpstorage"
 	"ostadbun/pkg/richerror"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func (h Handler) addPendingMajor(c *fiber.Ctx) error {
+func (h Handler) EditPendingLesson(c *fiber.Ctx) error {
+
+	fmt.Println("is this??🫟")
+
+	idString := c.Params("id")
+
+	idINT, err := strconv.Atoi(idString)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "id not a number",
+		})
+	}
+	id := int64(idINT)
 
 	userId, err := httpstorage.Get(c, "user_id").Number()
 	if err != nil {
@@ -19,7 +33,7 @@ func (h Handler) addPendingMajor(c *fiber.Ctx) error {
 		})
 	}
 
-	var acceptData manipulationParam.PendingMajor
+	var acceptData manipulationParam.PendingLesson
 
 	er := c.BodyParser(&acceptData)
 
@@ -30,20 +44,27 @@ func (h Handler) addPendingMajor(c *fiber.Ctx) error {
 		})
 	}
 
-	data := entity.PendingMajor{
+	data := entity.PendingLesson{
 		Name:               acceptData.Name,
 		NameEnglish:        acceptData.NameEnglish,
 		DescriptionEnglish: acceptData.DescriptionEnglish,
 		Description:        acceptData.Description,
-		SubmittedBy:        int64(userId),
+		Term:               acceptData.Term,
+		Difficulty:         acceptData.Difficulty,
+		Action:             "update",
+		TargetId:           &id,
 	}
 
 	go func() {
-		if err := notify.NotifyNewMajor(data); err != nil {
-			//TODO log here
-		}
+		//if err := notify.NotifyNewLesson(data); err != nil {
+		//	//TODO log here
+		//}
 	}()
 
-	return richerror.Out(h.manipulSVC.AddPendingMajor(data, userId), c)
+	rs := h.manipulSVC.EditPendingLesson(data, userId)
 
+	if rs != nil {
+		return richerror.Out(rs, c)
+	}
+	return rs
 }
