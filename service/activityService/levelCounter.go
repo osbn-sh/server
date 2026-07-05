@@ -2,7 +2,6 @@ package activityService
 
 import (
 	"context"
-	"errors"
 	"fmt"
 )
 
@@ -14,16 +13,21 @@ import (
 
 func (a Activity) LevelCalculator(ctx context.Context, userid int) (int, error) {
 
+	fmt.Println("\n-------------------------------------------")
+
 	LevelCounted, errRedis := a.redis.Check(ctx, userid)
-	//TODO log Redis Error
-	if errors.Is(errRedis, nil) && LevelCounted > -1 {
+	fmt.Println("Redis Err", errRedis)
+
+	//no error
+	if errRedis == nil && LevelCounted > -1 {
 		fmt.Println("LevelCounted rds", LevelCounted)
 		return LevelCounted, nil
 	}
+	//TODO log Redis Error
 
 	MainlevelCounted, ErrPsg := a.repo.MainStoreCalculateAndFetch(userid)
 	//TODO log postgres Error
-	if errors.Is(ErrPsg, nil) && MainlevelCounted > -1 {
+	if ErrPsg == nil && MainlevelCounted > -1 {
 		fmt.Println("LevelCounted psql", MainlevelCounted)
 		SetNewToRedis := a.redis.Set(ctx, userid, MainlevelCounted)
 		if SetNewToRedis != nil {
