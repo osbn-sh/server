@@ -36,6 +36,7 @@ func (h Handler) addPendingMajor(c *fiber.Ctx) error {
 		DescriptionEnglish: acceptData.DescriptionEnglish,
 		Description:        acceptData.Description,
 		SubmittedBy:        int64(userId),
+		Action:             "create",
 	}
 
 	go func() {

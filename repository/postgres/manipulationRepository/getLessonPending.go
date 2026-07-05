@@ -2,7 +2,6 @@ package manipulationRepository
 
 import (
 	"database/sql"
-	"fmt"
 	"ostadbun/entity"
 	"ostadbun/pkg/richerror"
 )
@@ -43,10 +42,9 @@ func (d DB) GetLessonPending(Id int, filterBySubmitter bool) ([]entity.PendingLe
 			query += " AND id = $1"
 		}
 
-		fmt.Println("👱🏻‍♀️ 1", query)
 		rows, err = d.conn.Conn().Query(query, Id)
 	} else {
-		fmt.Println("👱🏻‍♀️ 2", query)
+
 		rows, err = d.conn.Conn().Query(query)
 	}
 

@@ -100,9 +100,11 @@ func (s Service) LessonGet(target string) (*entity.Lesson, error) {
 	var err error
 
 	if errT != nil {
+
 		data, err = s.academicRepo.LessonGetByHref(target)
 
 	} else {
+
 		data, err = s.academicRepo.LessonGet(intTarget)
 	}
 

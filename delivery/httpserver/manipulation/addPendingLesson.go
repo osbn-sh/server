@@ -37,6 +37,7 @@ func (h Handler) addPendingLesson(c *fiber.Ctx) error {
 		Term:               acceptData.Term,
 		Difficulty:         acceptData.Difficulty,
 		SubmittedBy:        int64(userId),
+		Action:             "create",
 	}
 
 	go func() {

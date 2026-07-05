@@ -39,6 +39,7 @@ func (h Handler) addPendingProfessor(c *fiber.Ctx) error {
 		ImageUrl:           &acceptData.ImageUrl,
 		EducationHistory:   acceptData.EducationHistory,
 		SubmittedBy:        int64(userId),
+		Action:             "create",
 	}
 
 	go func() {

@@ -8,11 +8,27 @@ import (
 
 func (m Manipulation) EditPendingUniversity(lesson entity.PendingUniversity, userId int) error {
 
+	pl, _ := m.academic.UniversityGet(fmt.Sprintf("%d", *lesson.TargetId))
+
+	OkLogic := pl != nil
+
+	if !OkLogic {
+		return richerror.New("addpendinglesson.service").WithMessage(fmt.Sprintf("همچین چیزی وجود ندارد %d", *lesson.TargetId))
+	}
+
 	return m.manipulationRepo.AddUniversityPending(lesson, userId)
 
 }
 
 func (m Manipulation) EditPendingProfessor(lesson entity.PendingProfessor, userId int) error {
+
+	pl, _ := m.academic.ProfessorGet(fmt.Sprintf("%d", *lesson.TargetId))
+
+	OkLogic := pl != nil
+
+	if !OkLogic {
+		return richerror.New("addpendinglesson.service").WithMessage(fmt.Sprintf("همچین چیزی وجود ندارد %d", *lesson.TargetId))
+	}
 
 	return m.manipulationRepo.AddProfessorPending(lesson, userId)
 
@@ -24,13 +40,26 @@ func (m Manipulation) EditPendingLesson(lesson entity.PendingLesson, userId int)
 		return richerror.New("addpendinglesson.service").WithMessage("سختی باید بین ۱ تا ۵ باشد")
 	}
 
-	//get is exit this lesson id
-	fmt.Println("98sjy7")
+	pl, _ := m.academic.LessonGet(fmt.Sprintf("%d", *lesson.TargetId))
+
+	OkLogic := pl != nil
+
+	if !OkLogic {
+		return richerror.New("addpendinglesson.service").WithMessage(fmt.Sprintf("همچین چیزی وجود ندارد %d", *lesson.TargetId))
+	}
 	return m.manipulationRepo.AddLessonPending(lesson, userId)
 
 }
 
 func (m Manipulation) EditPendingMajor(lesson entity.PendingMajor, userId int) error {
+
+	pl, _ := m.academic.MajorGet(fmt.Sprintf("%d", *lesson.TargetId))
+
+	OkLogic := pl != nil
+
+	if !OkLogic {
+		return richerror.New("addpendinglesson.service").WithMessage(fmt.Sprintf("همچین چیزی وجود ندارد %d", *lesson.TargetId))
+	}
 
 	return m.manipulationRepo.AddMajorPending(lesson, userId)
 

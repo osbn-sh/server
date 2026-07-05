@@ -38,6 +38,7 @@ func (h Handler) addPendingUniversity(c *fiber.Ctx) error {
 		City:               acceptData.City,
 		Category:           acceptData.Category,
 		SubmittedBy:        int64(userId),
+		Action:             "create",
 	}
 
 	go func() {
