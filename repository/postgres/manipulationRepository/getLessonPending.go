@@ -7,7 +7,8 @@ import (
 )
 
 // GetLessonPending returns all lessons with 'pending' status
-func (d DB) GetLessonPending(userId int) ([]entity.PendingLesson, error) {
+// if you need to search by userid filterBySubmitter = false and if need to search by pending lesson id filterBySubmitter = true
+func (d DB) GetLessonPending(Id int, filterBySubmitter bool) ([]entity.PendingLesson, error) {
 	query := `
         SELECT 
             id,
@@ -22,7 +23,9 @@ func (d DB) GetLessonPending(userId int) ([]entity.PendingLesson, error) {
             submitted_at,
             approved_by,
             approved_at,
-            rejection_reason
+            rejection_reason,
+			action,
+            target_id
         FROM pending_lesson
         WHERE status = 'pending'
     `
@@ -32,14 +35,21 @@ func (d DB) GetLessonPending(userId int) ([]entity.PendingLesson, error) {
 		err  error
 	)
 
-	if userId > 0 {
-		query += " AND submitted_by = $1"
-		rows, err = d.conn.Conn().Query(query, userId)
+	if Id > 0 {
+		if filterBySubmitter {
+			query += " AND submitted_by = $1"
+		} else {
+			query += " AND id = $1"
+		}
+
+		rows, err = d.conn.Conn().Query(query, Id)
 	} else {
+
 		rows, err = d.conn.Conn().Query(query)
 	}
+
 	if err != nil {
-		return nil, richerror.New("manipulationRepository-GetLessonPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending lesson")
+		return nil, richerror.New("manipulationRepository-GetLessonPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending lesson2")
 	}
 	defer rows.Close()
 
@@ -61,9 +71,11 @@ func (d DB) GetLessonPending(userId int) ([]entity.PendingLesson, error) {
 			&lesson.ApprovedBy,
 			&lesson.ApprovedAt,
 			&lesson.RejectionReason,
+			&lesson.Action,
+			&lesson.TargetId,
 		)
 		if err != nil {
-			return nil, richerror.New("manipulationRepository-GetLessonPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending lesson")
+			return nil, richerror.New("manipulationRepository-GetLessonPending").WithErr(err).WithKind(richerror.KindUnexpected)
 		}
 		lessons = append(lessons, lesson)
 	}

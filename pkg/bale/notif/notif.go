@@ -18,6 +18,8 @@ type MessageRequest struct {
 
 func Notify(message string) error {
 
+	//TODO remve this
+	return nil
 	botToken := os.Getenv("BALE_TOKEN")
 	chatID := os.Getenv("BALE_CHAT_ID")
 

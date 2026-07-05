@@ -1,15 +1,30 @@
 package manipulation
 
 import (
+	"fmt"
 	"ostadbun/entity"
 	manipulationParam "ostadbun/param/manipulation"
 	"ostadbun/pkg/httpstorage"
 	"ostadbun/pkg/richerror"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func (h Handler) addPendingLesson(c *fiber.Ctx) error {
+func (h Handler) EditPendingLesson(c *fiber.Ctx) error {
+
+	fmt.Println("is this??🫟")
+
+	idString := c.Params("id")
+
+	idINT, err := strconv.Atoi(idString)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "id not a number",
+		})
+	}
+	id := int64(idINT)
 
 	userId, err := httpstorage.Get(c, "user_id").Number()
 	if err != nil {
@@ -36,8 +51,8 @@ func (h Handler) addPendingLesson(c *fiber.Ctx) error {
 		Description:        acceptData.Description,
 		Term:               acceptData.Term,
 		Difficulty:         acceptData.Difficulty,
-		SubmittedBy:        int64(userId),
-		Action:             "create",
+		Action:             "update",
+		TargetId:           &id,
 	}
 
 	go func() {
@@ -46,7 +61,7 @@ func (h Handler) addPendingLesson(c *fiber.Ctx) error {
 		//}
 	}()
 
-	rs := h.manipulSVC.AddPendingLesson(data, userId)
+	rs := h.manipulSVC.EditPendingLesson(data, userId)
 
 	if rs != nil {
 		return richerror.Out(rs, c)

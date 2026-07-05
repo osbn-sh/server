@@ -60,13 +60,13 @@ func main() {
 	userRepo := userRepository.New(dbConf)
 	userSvc := userservice.New(*oauth, activeSvc, userRds, userRepo)
 
-	//manipulation
-	maniRepo := manipulationRepository.New(dbConf)
-	maniSVC := manipulationService.New(activeSvc, *maniRepo)
-
 	//academic
 	academicRepo := academicRepository.New(dbConf)
 	acaSVC := academicService.New(*academicRepo)
+
+	//manipulation
+	maniRepo := manipulationRepository.New(dbConf)
+	maniSVC := manipulationService.New(activeSvc, acaSVC, *maniRepo)
 
 	//student
 	studentRepo := studentRepository.New(dbConf)

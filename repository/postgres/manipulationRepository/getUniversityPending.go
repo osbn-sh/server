@@ -6,7 +6,7 @@ import (
 	"ostadbun/pkg/richerror"
 )
 
-func (d DB) GetUniversityPending(userId int) ([]entity.PendingUniversity, error) {
+func (d DB) GetUniversityPending(Id int, filterBySubmitter bool) ([]entity.PendingUniversity, error) {
 	query := `
         SELECT 
             id,
@@ -22,7 +22,9 @@ func (d DB) GetUniversityPending(userId int) ([]entity.PendingUniversity, error)
             submitted_at,
             approved_by,
             approved_at,
-            rejection_reason
+            rejection_reason,
+            action,
+            target_id
         FROM pending_university
         WHERE status = 'pending'
     `
@@ -32,12 +34,17 @@ func (d DB) GetUniversityPending(userId int) ([]entity.PendingUniversity, error)
 		err  error
 	)
 
-	if userId > 0 {
-		query += " AND submitted_by = $1"
-		rows, err = d.conn.Conn().Query(query, userId)
+	if Id > 0 {
+		if filterBySubmitter {
+			query += " AND submitted_by = $1"
+		} else {
+			query += " AND id = $1"
+		}
+		rows, err = d.conn.Conn().Query(query, Id)
 	} else {
 		rows, err = d.conn.Conn().Query(query)
 	}
+
 	if err != nil {
 		return nil, richerror.New("manipulationRepository-GetUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending university")
 	}
@@ -62,6 +69,8 @@ func (d DB) GetUniversityPending(userId int) ([]entity.PendingUniversity, error)
 			&university.ApprovedBy,
 			&university.ApprovedAt,
 			&university.RejectionReason,
+			&university.Action,
+			&university.TargetId,
 		)
 		if err != nil {
 			return nil, richerror.New("manipulationRepository-GetUniversityPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending university")

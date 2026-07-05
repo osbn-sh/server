@@ -5,6 +5,7 @@ import (
 	manipulationParam "ostadbun/param/manipulation"
 	notify "ostadbun/pkg/bale/notif"
 	"ostadbun/pkg/httpstorage"
+	"ostadbun/pkg/richerror"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -35,6 +36,7 @@ func (h Handler) addPendingMajor(c *fiber.Ctx) error {
 		DescriptionEnglish: acceptData.DescriptionEnglish,
 		Description:        acceptData.Description,
 		SubmittedBy:        int64(userId),
+		Action:             "create",
 	}
 
 	go func() {
@@ -43,6 +45,6 @@ func (h Handler) addPendingMajor(c *fiber.Ctx) error {
 		}
 	}()
 
-	return h.manipulSVC.AddPendingMajor(data, userId)
+	return richerror.Out(h.manipulSVC.AddPendingMajor(data, userId), c)
 
 }
