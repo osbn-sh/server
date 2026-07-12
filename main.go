@@ -13,6 +13,7 @@ import (
 	"ostadbun/repository/postgres/manipulationRepository"
 	"ostadbun/repository/postgres/studentRepository"
 	"ostadbun/repository/postgres/userRepository"
+	"ostadbun/repository/postgres/voteRepository"
 	"ostadbun/repository/redis/redisActivity"
 	"ostadbun/repository/redis/redisGithubVersionChecking"
 	"ostadbun/repository/redis/redisOauth"
@@ -20,6 +21,7 @@ import (
 	"ostadbun/service/academicService"
 	"ostadbun/service/activityService"
 	"ostadbun/service/githubcheckingversionservice"
+	"ostadbun/service/voteService"
 
 	"ostadbun/service/manipulationService"
 	"ostadbun/service/studentService"
@@ -72,11 +74,14 @@ func main() {
 	studentRepo := studentRepository.New(dbConf)
 	stuSVC := studentService.New(*studentRepo)
 
+	voteRepo := voteRepository.New(dbConf)
+	voteSVC := voteService.New(*voteRepo)
+
 	GithubVChRds := redisGithubVersionChecking.New(redisClient)
 	GithubCheckingVersionService := githubcheckingversionservice.New(*GithubVChRds)
 
 	//engine
-	server := httpserver.New(userSvc, activeSvc, maniSVC, acaSVC, stuSVC, *GithubCheckingVersionService)
+	server := httpserver.New(userSvc, activeSvc, maniSVC, acaSVC, stuSVC, voteSVC, *GithubCheckingVersionService)
 
 	fmt.Println("listening on", enviromentPrinter(), "...")
 

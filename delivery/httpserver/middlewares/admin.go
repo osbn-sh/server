@@ -42,6 +42,7 @@ func IsAdmin(usv userservice.User) func(c *fiber.Ctx) error {
 			})
 		}
 
+		fmt.Println("you are admin", userID)
 		return c.Next()
 
 	}
