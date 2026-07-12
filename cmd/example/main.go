@@ -1,14 +1,9 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"ostadbun/adaptor/redisAdaptor"
 	"ostadbun/database"
-	"ostadbun/repository/postgres/activityRepository"
-	"ostadbun/repository/redis/redisActivity"
-	"ostadbun/service/activityService"
-	"time"
+	"ostadbun/repository/postgres/voteRepository"
 
 	"github.com/joho/godotenv"
 )
@@ -19,22 +14,34 @@ func main() {
 
 	dbconf := database.New()
 
-	redisClient := redisAdaptor.New()
+	//redisClient := redisAdaptor.New()
 
-	g := activityRepository.New(dbconf)
+	//g := activityRepository.New(dbconf)
 
-	rds := redisActivity.New(redisClient)
-	ttt := activityService.New(g, *rds)
-
-	ctx := context.Background()
+	//rds := redisActivity.New(redisClient)
 
 	//ttt.Trigger(ctx, 69, Activityconstants.TriggerMakeAdmin)
 
 	//fmt.Print("the user level is: ")
 
-	t := time.Now()
-	fmt.Println(ttt.LevelCalculator(ctx, 69))
+	gf := voteRepository.New(dbconf)
 
-	fmt.Println(time.Since(t))
+	//err := gf.AddOption(voteparam.Option{
+	//	Name:   "good",
+	//	Weight: 3,
+	//})
+
+	//err := gf.AddRate(69, voteparam.Vote{
+	//	OptionID: 2,
+	//	Rate:     10,
+	//	Target:   "professor",
+	//	TargetID: 35,
+	//})
+
+	//fmt.Println(gf.ChangeRate(25, 2))
+
+	//fmt.Println(gf.ChangeOption(2, voteparam.Option{Name: "ظاهر آراسته", Weight: 2}))
+
+	fmt.Println(gf.CalcVotesByOption("professor", 35))
 
 }

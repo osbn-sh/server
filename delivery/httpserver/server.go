@@ -3,7 +3,10 @@ package httpserver
 import (
 	"fmt"
 	"ostadbun/delivery/httpserver/academic"
-	homehandler "ostadbun/delivery/httpserver/homeHandler"
+	homehandler "ostadbun/delivery/httpserver/home"
+	votehandler "ostadbun/delivery/httpserver/vote"
+	"ostadbun/service/voteService"
+
 	"ostadbun/delivery/httpserver/manipulation"
 	"ostadbun/delivery/httpserver/student"
 	"ostadbun/delivery/httpserver/userhandler"
@@ -31,6 +34,7 @@ type Server struct {
 	academicHandler     academic.Handler
 	homeHandler         homehandler.Handler
 	studentHandler      student.Handler
+	voteHandler         votehandler.Handler
 }
 
 func New(
@@ -39,6 +43,7 @@ func New(
 	manipulService manipulationService.Manipulation,
 	academicService academicservice.Service,
 	studentService studentService.Service,
+	voteSvc voteService.Service,
 	GithubCheckingVersionService githubcheckingversionservice.GithubCheckingVersionService,
 
 ) Server {
@@ -50,6 +55,7 @@ func New(
 		academicHandler:     academic.New(academicService),
 		homeHandler:         homehandler.New(GithubCheckingVersionService),
 		studentHandler:      student.New(academicService, studentService, userService),
+		voteHandler:         votehandler.New(userService, voteSvc),
 	}
 }
 
@@ -68,6 +74,7 @@ func (s Server) Serve() {
 	s.academicHandler.SetRoutes(e)
 	s.homeHandler.SetRoutes(e)
 	s.studentHandler.SetRoutes(e)
+	s.voteHandler.SetRoutes(e)
 
 	ShowRoutes(e)
 	log.Fatal(e.Listen(":8686"))
