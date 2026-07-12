@@ -72,7 +72,7 @@ func (h Handler) Search(c *fiber.Ctx) error {
 
 			return c.Status(200).JSON(academicsData)
 		} else {
-			return c.Status(http.StatusNotFound).SendString("Not Found")
+			return c.Status(http.StatusNotFound).SendString(fmt.Sprintf("not found professor: %d,lesson: %d,major: %d,university %d ", len(academicsData.Professor), len(academicsData.Lesson), len(academicsData.Major), len(academicsData.University)))
 		}
 
 	} else {

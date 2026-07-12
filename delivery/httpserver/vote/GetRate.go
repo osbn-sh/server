@@ -1,6 +1,7 @@
 package votehandler
 
 import (
+	"fmt"
 	"ostadbun/param/voteparam"
 	"ostadbun/pkg/richerror"
 
@@ -13,11 +14,13 @@ func (h Handler) GetRate(c *fiber.Ctx) error {
 
 	errBody := c.BodyParser(&data)
 
-	if errBody != nil {
+	if errBody != nil || data.TargetID < 1 || len(data.Target) < 1 {
 		return richerror.Out(
 			richerror.New("addOption.delivery").WithMessage("error on parsing data").WithKind(richerror.KindInvalid),
 			c)
 	}
+
+	fmt.Println(data)
 
 	SvcData, err := h.voteSvc.Get(data)
 
