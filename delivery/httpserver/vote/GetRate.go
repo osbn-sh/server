@@ -1,7 +1,6 @@
 package votehandler
 
 import (
-	"fmt"
 	"ostadbun/param/voteparam"
 	"ostadbun/pkg/richerror"
 
@@ -10,17 +9,26 @@ import (
 
 func (h Handler) GetRate(c *fiber.Ctx) error {
 
-	var data voteparam.Vote
+	entity := c.Params("entity")
 
-	errBody := c.BodyParser(&data)
-
-	if errBody != nil || data.TargetID < 1 || len(data.Target) < 1 {
+	if entity == "" {
 		return richerror.Out(
-			richerror.New("addOption.delivery").WithMessage("error on parsing data").WithKind(richerror.KindInvalid),
+			richerror.New("voteget.delivery").WithMessage("entity not found").WithKind(richerror.KindInvalid),
 			c)
 	}
 
-	fmt.Println(data)
+	slug, errIDSlug := c.ParamsInt("slug")
+
+	if errIDSlug != nil {
+		return richerror.Out(
+			richerror.New("voteget.delivery").WithMessage("slug not found").WithKind(richerror.KindInvalid),
+			c)
+	}
+
+	data := voteparam.Vote{
+		Target:   entity,
+		TargetID: slug,
+	}
 
 	SvcData, err := h.voteSvc.Get(data)
 
