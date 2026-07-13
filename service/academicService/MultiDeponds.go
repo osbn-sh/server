@@ -5,14 +5,13 @@ import (
 	"ostadbun/entity"
 )
 
+// this service need to optimize
 func (s Service) MultiDepend(id int, target string) (entity.MultiDependSlice, error) {
 	data, err := s.academicRepo.MultiDepending(id, fmt.Sprintf("%s_id", target))
 	if err != nil || data == nil {
 		// TODO log here
 		return entity.MultiDependSlice{}, err
 	}
-
-	fmt.Println(id, target, data)
 
 	var multi = entity.MultiDependSlice{
 		Major:      []entity.Major{},
@@ -21,25 +20,37 @@ func (s Service) MultiDepend(id int, target string) (entity.MultiDependSlice, er
 		University: []entity.University{},
 	}
 
+	// map برای جلوگیری از اضافه شدن آیدی تکراری
+	seenMajor := map[int]bool{}
+	seenLesson := map[int]bool{}
+	seenProfessor := map[int]bool{}
+	seenUniversity := map[int]bool{}
+
 	if *data != nil {
 		for _, b := range *data {
-			multi.Professor = append(multi.Professor, entity.Professor{Id: b.ProfessorId})
-			multi.Lessons = append(multi.Lessons, entity.Lesson{Id: b.LessonId})
-			multi.Major = append(multi.Major, entity.Major{Id: b.MajorId})
-			multi.University = append(multi.University, entity.University{Id: b.UniversityId})
+			if !seenProfessor[b.ProfessorId] {
+				seenProfessor[b.ProfessorId] = true
+				multi.Professor = append(multi.Professor, entity.Professor{Id: b.ProfessorId})
+			}
+			if !seenLesson[b.LessonId] {
+				seenLesson[b.LessonId] = true
+				multi.Lessons = append(multi.Lessons, entity.Lesson{Id: b.LessonId})
+			}
+			if !seenMajor[b.MajorId] {
+				seenMajor[b.MajorId] = true
+				multi.Major = append(multi.Major, entity.Major{Id: b.MajorId})
+			}
+			if !seenUniversity[b.UniversityId] {
+				seenUniversity[b.UniversityId] = true
+				multi.University = append(multi.University, entity.University{Id: b.UniversityId})
+			}
 		}
 	}
 
-	fmt.Println(multi.University)
-	fmt.Println(multi.Professor)
-	fmt.Println(multi.Major)
-	fmt.Println(multi.Lessons)
 	newMulti := s.creation(multi, target)
 
 	return newMulti, nil
-
 }
-
 func (s Service) creation(data entity.MultiDependSlice, target string) entity.MultiDependSlice {
 	var newData entity.MultiDependSlice
 
