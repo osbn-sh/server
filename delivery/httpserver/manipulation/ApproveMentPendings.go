@@ -149,11 +149,19 @@ func Validating(c *fiber.Ctx) (bool, int, string, error) {
 		return false, 0, "", fmt.Errorf("id is invalid, should be a number")
 	}
 
-	reason := string(c.BodyRaw())
-	if len(reason) < 5 {
-		reason = os.Getenv("REASON_REJECTION")
+	var reason ApproveReject
+
+	errBody := c.BodyParser(&reason)
+
+	if errBody != nil || len(reason.Reason) < 5 {
+		newReason := os.Getenv("REASON_REJECTION")
+
+		return status, targetID, newReason, nil
 	}
 
-	fmt.Println("reason:", reason)
-	return status, targetID, reason, nil
+	return status, targetID, reason.Reason, nil
+}
+
+type ApproveReject struct {
+	Reason string `json:"reason"`
 }
