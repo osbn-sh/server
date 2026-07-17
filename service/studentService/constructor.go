@@ -10,6 +10,6 @@ type Service struct {
 	activity     activityService.Activity
 }
 
-func New(academicRepo academicRepository.DB) Service {
-	return Service{academicRepo: academicRepo}
+func New(academicRepo academicRepository.DB, activity activityService.Activity) Service {
+	return Service{academicRepo: academicRepo, activity: activity}
 }

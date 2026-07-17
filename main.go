@@ -72,7 +72,7 @@ func main() {
 
 	//student
 	studentRepo := studentRepository.New(dbConf)
-	stuSVC := studentService.New(*studentRepo)
+	stuSVC := studentService.New(*studentRepo, activeSvc)
 
 	voteRepo := voteRepository.New(dbConf)
 	voteSVC := voteService.New(*voteRepo)
