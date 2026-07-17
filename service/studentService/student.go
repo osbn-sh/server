@@ -2,6 +2,7 @@ package studentService
 
 import (
 	"context"
+	"ostadbun/entity"
 	"ostadbun/param/studentparam"
 	Activityconstants "ostadbun/pkg/constants"
 )
@@ -21,4 +22,10 @@ func (s Service) Add(userID int, student studentparam.StudentPassDetail, c conte
 	}
 
 	return er
+}
+
+func (s Service) Get(userID int) ([]entity.PassedLessonInfo, error) {
+
+	return s.academicRepo.GetPass(userID)
+
 }

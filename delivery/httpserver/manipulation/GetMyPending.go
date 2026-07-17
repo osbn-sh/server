@@ -22,7 +22,7 @@ func (h Handler) GetMyPending(c *fiber.Ctx) error {
 
 	if errM != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": errM,
+			"error": errM.Error(),
 			"code":  "major",
 		})
 	}

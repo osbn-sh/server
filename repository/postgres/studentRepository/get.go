@@ -2,28 +2,51 @@ package studentRepository
 
 import (
 	"fmt"
-	"ostadbun/param/studentparam"
+	"ostadbun/entity"
+
 	"ostadbun/pkg/richerror"
 )
 
-func (d DB) AddPass(userID int, data studentparam.StudentPassDetail) error {
+func (d DB) GetPass(userID int) ([]entity.PassedLessonInfo, error) {
 
 	query := `
-       	INSERT INTO passed_lesson_professor_user (user_id, university_id, major_id, professor_id, lesson_id) 
-		VALUES ($1, $2, $3, $4, $5)
-    `
+		SELECT p.id, p.name, l.id, l.name, m.id, m.name, u.id, u.name
+		FROM passed_lesson_professor_user AS plpu
+		JOIN professor  AS p ON plpu.professor_id  = p.id
+		JOIN lesson     AS l ON plpu.lesson_id     = l.id
+		JOIN major      AS m ON plpu.major_id      = m.id
+		JOIN university AS u ON plpu.university_id = u.id
+		WHERE plpu.user_id = $1
+	`
 
-	res, errT := d.conn.Conn().Exec(query,
-		userID,
-		data.UniversityID,
-		data.MajorID,
-		data.ProfessorID,
-		data.LessonID,
-	)
-
-	if errT != nil {
-		return richerror.New("academicRepository-UpsertPass").WithErr(errT)
+	rows, err := d.conn.Conn().Query(query, userID)
+	if err != nil {
+		return nil, richerror.New("studentRepository-GetPass").WithErr(err)
 	}
-	fmt.Println(res.RowsAffected())
-	return nil
+	defer rows.Close()
+
+	var result []entity.PassedLessonInfo
+	for rows.Next() {
+		var info entity.PassedLessonInfo
+		if err := rows.Scan(
+			&info.ProfessorID, &info.ProfessorName,
+			&info.LessonID, &info.LessonName,
+			&info.MajorID, &info.MajorName,
+			&info.UniversityID, &info.UniversityName,
+		); err != nil {
+			return nil, richerror.New("studentRepository-GetPass").WithErr(err)
+		}
+		result = append(result, info)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, richerror.New("studentRepository-GetPass").WithErr(err)
+	}
+
+	if len(result) == 0 {
+		return nil, richerror.New("studentRepository-GetPass").
+			WithErr(fmt.Errorf("no passed lessons found for user %d", userID))
+	}
+
+	return result, nil
 }
