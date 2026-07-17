@@ -26,7 +26,7 @@ func (d DB) GetUniversityPending(Id int, filterBySubmitter bool) ([]entity.Pendi
             action,
             target_id
         FROM pending_university
-        WHERE status = 'pending'
+     
     `
 
 	var (
@@ -36,9 +36,9 @@ func (d DB) GetUniversityPending(Id int, filterBySubmitter bool) ([]entity.Pendi
 
 	if Id > 0 {
 		if filterBySubmitter {
-			query += " AND submitted_by = $1"
+			query += "WHERE submitted_by = $1"
 		} else {
-			query += " AND id = $1"
+			query += "WHERE status = 'pending' AND id = $1"
 		}
 		rows, err = d.conn.Conn().Query(query, Id)
 	} else {

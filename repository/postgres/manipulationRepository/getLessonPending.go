@@ -27,7 +27,6 @@ func (d DB) GetLessonPending(Id int, filterBySubmitter bool) ([]entity.PendingLe
 			action,
             target_id
         FROM pending_lesson
-        WHERE status = 'pending'
     `
 
 	var (
@@ -37,9 +36,9 @@ func (d DB) GetLessonPending(Id int, filterBySubmitter bool) ([]entity.PendingLe
 
 	if Id > 0 {
 		if filterBySubmitter {
-			query += " AND submitted_by = $1"
+			query += "WHERE submitted_by = $1"
 		} else {
-			query += " AND id = $1"
+			query += "WHERE status = 'pending' AND id = $1"
 		}
 
 		rows, err = d.conn.Conn().Query(query, Id)

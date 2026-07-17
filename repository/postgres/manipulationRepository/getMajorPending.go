@@ -24,7 +24,6 @@ func (d DB) GetMajorPending(Id int, filterBySubmitter bool) ([]entity.PendingMaj
 	    action,
         target_id
 	FROM pending_major
-	WHERE status = 'pending'
 `
 
 	var (
@@ -34,9 +33,9 @@ func (d DB) GetMajorPending(Id int, filterBySubmitter bool) ([]entity.PendingMaj
 
 	if Id > 0 {
 		if filterBySubmitter {
-			query += " AND submitted_by = $1"
+			query += "WHERE submitted_by = $1"
 		} else {
-			query += " AND id = $1"
+			query += "WHERE status = 'pending' AND id = $1"
 		}
 		rows, err = d.conn.Conn().Query(query, Id)
 	} else {
@@ -44,7 +43,7 @@ func (d DB) GetMajorPending(Id int, filterBySubmitter bool) ([]entity.PendingMaj
 	}
 
 	if err != nil {
-		return nil, richerror.New("manipulationRepository-GetMajorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending major")
+		return nil, richerror.New("manipulationRepository-GetMajorPending").WithErr(err)
 	}
 	defer rows.Close()
 
@@ -68,13 +67,13 @@ func (d DB) GetMajorPending(Id int, filterBySubmitter bool) ([]entity.PendingMaj
 			&major.TargetId,
 		)
 		if err != nil {
-			return nil, richerror.New("manipulationRepository-GetMajorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending major")
+			return nil, richerror.New("manipulationRepository-GetMajorPending").WithErr(err)
 		}
 		majors = append(majors, major)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, richerror.New("manipulationRepository-GetMajorPending").WithErr(err).WithKind(richerror.KindUnexpected).WithMessage("error on query pending major")
+		return nil, richerror.New("manipulationRepository-GetMajorPending").WithErr(err)
 	}
 
 	return majors, nil
