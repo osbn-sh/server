@@ -19,7 +19,8 @@ type OptionVoteResult struct {
 }
 
 type MyVote struct {
-	Id       int
-	OptionId int
-	Rate     int
+	Id         int
+	OptionId   int
+	Rate       int
+	OptionName string
 }

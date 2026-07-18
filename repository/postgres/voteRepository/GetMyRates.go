@@ -8,22 +8,25 @@ import (
 func (d DB) GetMyRates(entityType string, userID, targetID int) ([]entity.MyVote, error) {
 	query := `
 		SELECT
-			id,
-			option_id,
-			rate
-		FROM vote
-		WHERE user_id = $1
+			v.id,
+			v.option_id,
+			v.rate,
+			o.name
+		FROM vote AS v
+		INNER JOIN option AS o
+			ON o.id = v.option_id
+		WHERE v.user_id = $1
 	`
 
 	args := []any{userID}
 
 	switch entityType {
 	case "university":
-		query += " AND university_id = $2"
+		query += " AND v.university_id = $2"
 		args = append(args, targetID)
 
 	case "professor":
-		query += " AND professor_id = $2"
+		query += " AND v.professor_id = $2"
 		args = append(args, targetID)
 
 	default:
@@ -49,6 +52,7 @@ func (d DB) GetMyRates(entityType string, userID, targetID int) ([]entity.MyVote
 			&v.Id,
 			&v.OptionId,
 			&v.Rate,
+			&v.OptionName,
 		); err != nil {
 			return nil, richerror.New("voteRepository-GetMyRates").
 				WithErr(err).
