@@ -32,3 +32,7 @@ func (s Service) UpdateOption(optionID int, data voteparam.Option) error {
 func (s Service) Get(data voteparam.Vote) ([]entity.OptionVoteResult, error) {
 	return s.voteRepo.CalcVotesByOption(data.Target, data.TargetID)
 }
+
+func (s Service) GetOptions() ([]voteparam.Option, error) {
+	return s.voteRepo.GetOption()
+}

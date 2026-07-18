@@ -1,6 +1,7 @@
 package entity
 
 type PassedLessonInfo struct {
+	PlpuID         int
 	ProfessorID    int
 	ProfessorName  string
 	LessonID       int

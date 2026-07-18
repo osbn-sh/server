@@ -17,6 +17,7 @@ func (h Handler) SetRoutes(e *fiber.App) {
 
 	adminGroup := e.Group("/option", middlewares.Auth(h.userSvc), middlewares.IsAdmin(h.userSvc))
 
+	adminGroup.Get("/", h.GetOption)
 	adminGroup.Post("/", h.AddOption)
 	adminGroup.Delete("/:option_id", h.DeleteOption)
 	adminGroup.Patch("/:option_id", h.UpdateOption)

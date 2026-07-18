@@ -1,7 +1,6 @@
 package studentRepository
 
 import (
-	"fmt"
 	"ostadbun/entity"
 
 	"ostadbun/pkg/richerror"
@@ -10,7 +9,7 @@ import (
 func (d DB) GetPass(userID int) ([]entity.PassedLessonInfo, error) {
 
 	query := `
-		SELECT p.id, p.name, l.id, l.name, m.id, m.name, u.id, u.name
+		SELECT plpu.id, p.id, p.name, l.id, l.name, m.id, m.name, u.id, u.name
 		FROM passed_lesson_professor_user AS plpu
 		JOIN professor  AS p ON plpu.professor_id  = p.id
 		JOIN lesson     AS l ON plpu.lesson_id     = l.id
@@ -29,6 +28,7 @@ func (d DB) GetPass(userID int) ([]entity.PassedLessonInfo, error) {
 	for rows.Next() {
 		var info entity.PassedLessonInfo
 		if err := rows.Scan(
+			&info.PlpuID,
 			&info.ProfessorID, &info.ProfessorName,
 			&info.LessonID, &info.LessonName,
 			&info.MajorID, &info.MajorName,
@@ -41,11 +41,6 @@ func (d DB) GetPass(userID int) ([]entity.PassedLessonInfo, error) {
 
 	if err := rows.Err(); err != nil {
 		return nil, richerror.New("studentRepository-GetPass").WithErr(err)
-	}
-
-	if len(result) == 0 {
-		return nil, richerror.New("studentRepository-GetPass").
-			WithErr(fmt.Errorf("no passed lessons found for user %d", userID))
 	}
 
 	return result, nil

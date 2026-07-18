@@ -8,7 +8,8 @@ type Vote struct {
 }
 
 type Option struct {
-	Name   string `json:"name"`
-	Weight int    `json:"weight"`
-	Owner  string `json:"owner"`
+	OptionID int    `json:"option_id"`
+	Name     string `json:"name"`
+	Weight   int    `json:"weight"`
+	Owner    string `json:"owner"`
 }
