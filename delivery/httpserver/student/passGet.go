@@ -17,7 +17,7 @@ func (h Handler) PassLessonGet(c *fiber.Ctx) error {
 			c)
 	}
 
-	PassedLessons, errD := h.studentService.Get(userID, c.Context())
+	PassedLessons, errD := h.studentService.Get(userID)
 
 	if errD != nil {
 		return richerror.Out(errD, c)
