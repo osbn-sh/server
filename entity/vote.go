@@ -17,3 +17,9 @@ type OptionVoteResult struct {
 	AverageRate float64
 	VoteCount   int
 }
+
+type MyVote struct {
+	Id       int
+	OptionId int
+	Rate     int
+}

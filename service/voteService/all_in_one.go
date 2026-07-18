@@ -33,6 +33,10 @@ func (s Service) Get(data voteparam.Vote) ([]entity.OptionVoteResult, error) {
 	return s.voteRepo.CalcVotesByOption(data.Target, data.TargetID)
 }
 
+func (s Service) GetMyRate(userID int, data voteparam.Vote) ([]entity.MyVote, error) {
+	return s.voteRepo.GetMyRates(data.Target, userID, data.TargetID)
+}
+
 func (s Service) GetOptions() ([]voteparam.Option, error) {
 	return s.voteRepo.GetOption()
 }

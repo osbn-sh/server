@@ -15,6 +15,8 @@ func (h Handler) SetRoutes(e *fiber.App) {
 	userGroup.Delete("/:rate_id", h.DeleteRate)
 	userGroup.Patch("/:rate_id", h.UpdateRate)
 
+	userGroup.Get("/i/:entity/:rate", h.GetMyRate)
+
 	adminGroup := e.Group("/option", middlewares.Auth(h.userSvc), middlewares.IsAdmin(h.userSvc))
 
 	adminGroup.Get("/", h.GetOption)
