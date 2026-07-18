@@ -30,11 +30,11 @@ func (d DB) CalcVotesByOption(entityType string, entityID int) ([]entity.OptionV
 
 	rows, err := d.conn.Conn().Query(query, entityID, entityType)
 	if err != nil {
-		return nil, richerror.New("voteRepository-CalcVotesByOption").WithErr(err).WithKind(richerror.KindUnexpected)
+		return []entity.OptionVoteResult{}, richerror.New("voteRepository-CalcVotesByOption").WithErr(err).WithKind(richerror.KindUnexpected)
 	}
 	defer rows.Close()
 
-	var results []entity.OptionVoteResult
+	results := make([]entity.OptionVoteResult, 0)
 	for rows.Next() {
 		var r entity.OptionVoteResult
 		if err := rows.Scan(&r.OptionID, &r.OptionName, &r.Weight, &r.AverageRate, &r.VoteCount); err != nil {
