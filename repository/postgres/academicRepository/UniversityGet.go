@@ -10,7 +10,7 @@ func (d DB) UniversityGet(id int) (*entity.University, error) {
 
 	// Query برای جستجوی درس‌ها
 	query := `
-        SELECT id,name ,name_english,description ,description_english,category,image_url,href
+        SELECT id,name ,name_english,description ,description_english,category,image_url,href,city
         FROM university 
         WHERE 
 		 	id = $1; 
@@ -27,6 +27,7 @@ func (d DB) UniversityGet(id int) (*entity.University, error) {
 		&university.Category,
 		&university.ImageUrl,
 		&university.Href,
+		&university.City,
 	)
 
 	if errT != nil {
