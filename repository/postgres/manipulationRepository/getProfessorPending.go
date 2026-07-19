@@ -38,7 +38,7 @@ func (d DB) GetProfessorPending(Id int, filterBySubmitter bool) ([]entity.Pendin
 		if filterBySubmitter {
 			query += "WHERE submitted_by = $1"
 		} else {
-			query += "WHERE status = 'pending' AND id = $1"
+			query += "WHERE AND id = $1"
 		}
 		rows, err = d.conn.Conn().Query(query, Id)
 	} else {

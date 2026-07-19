@@ -11,8 +11,8 @@ func (d DB) MultiDepending(id int, entityTarget string) (*[]entity.MultiDependin
 
 	// Query برای جستجوی درس‌ها
 	query := `
-        SELECT *
-        FROM multi_depending 
+        SELECT professor_id,lesson_id,university_id, major_id
+        FROM passed_lesson_professor_user 
         WHERE 
 		%s = $1; 
     `
