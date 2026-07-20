@@ -4,36 +4,20 @@ import (
 	"ostadbun/entity"
 )
 
-func (s Service) GetPendingLessonPreReq(id int) (*[]entity.Lesson, error) {
-	//data, err := s.academicRepo.GetPendingLessonPreRequisites(id)
-	//if err != nil {
-	//	return nil, richerror.New("academicRepository-LessonPreReq").WithErr(err)
-	//}
+func (s Service) GetPendingLessonCheck() (entity.OutParam, error) {
+	dataPre, errPre := s.academicRepo.GetPendingLessonPreRequisites()
 
-	//lessons, errL := s.academicRepo.LessonGetMany(data...)
-	//
-	//if errL != nil {
-	//	return nil, richerror.New("academicRepository-LessonPreReq").WithErr(errL).WithMessage("error getting lessons on pre requities")
-	//
-	//}
+	dataCo, errCo := s.academicRepo.GetPendingLessonCoRequisites()
 
-	//return lessons, err
-	panic("")
-}
+	if errPre != nil || errCo != nil {
+		return entity.OutParam{}, errPre
+	}
 
-func (s Service) GetPendingLessonCoReq(id int) (*[]entity.Lesson, error) {
-	//data, err := s.academicRepo.GetPendingLessonCoRequisites(id)
-	//if err != nil {
-	//	return nil, richerror.New("academicRepository-LessonCoReq").WithErr(err)
-	//}
-	//
-	//lessons, errL := s.academicRepo.LessonGetMany(data...)
-	//
-	//if errL != nil {
-	//	return nil, richerror.New("academicRepository-LessonCoReq").WithErr(errL).WithMessage("error getting lessons on Co requities")
-	//
-	//}
-	//
-	//return lessons, err
-	panic("")
+	data := entity.OutParam{
+		PreRequites: dataPre,
+		CoRequites:  dataCo,
+	}
+
+	return data, nil
+
 }

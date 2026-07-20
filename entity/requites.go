@@ -17,3 +17,8 @@ type PreRequites struct {
 	RejectionReason        *string `json:"rejectionReason"`
 	Status                 string  `json:"status"`
 }
+
+type OutParam struct {
+	PreRequites []PreRequites `json:"pre_requisites,omitempty"`
+	CoRequites  []CoRequites  `json:"co_requisites,omitempty"`
+}

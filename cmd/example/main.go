@@ -26,7 +26,7 @@ func main() {
 
 	acaRepo := academicRepository.New(dbconf)
 
-	err := acaRepo.PreRequitesApprovement(30, 33, false, nil)
+	err := acaRepo.AddPendingLessonPreRequisites(41, 36)
 	fmt.Println(err)
 	//fmt.Println(gf.ChangeRate(25, 2))
 

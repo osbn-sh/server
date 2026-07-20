@@ -5,7 +5,7 @@ import (
 	"ostadbun/pkg/richerror"
 )
 
-func (d DB) CoRequitesApprovement(id, targetId int, status bool, reason string) error {
+func (d DB) CoRequitesApprovement(id, targetId int, status bool, reason *string) error {
 
 	query := `
        	update lesson_co_requisite
