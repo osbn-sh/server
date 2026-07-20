@@ -39,7 +39,7 @@ func (h Handler) AddCoLessonRequites(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{})
 	}
 
-	err := h.academicService.AddPreRequitesLesson(data)
+	err := h.academicService.AddCoRequitesLesson(data)
 
 	if err != nil {
 		return richerror.Out(err, c)
