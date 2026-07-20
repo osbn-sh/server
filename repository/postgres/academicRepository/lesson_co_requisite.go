@@ -11,7 +11,8 @@ func (d DB) LessonCoRequisites(id int) ([]int, error) {
        SELECT co_requisite_lesson_id 
         FROM lesson_co_requisite 
         WHERE 
-		 	lesson_id = $1; 
+            status = 'approved' and
+		 	lesson_id = $1;
     `
 
 	// اجرای Query و دریافت نتایج

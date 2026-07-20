@@ -15,4 +15,7 @@ func (h Handler) SetRoutes(e *fiber.App) {
 
 	userGroup.Get("/relation/:param/:id", h.Multi)
 
+	userGroup.Get("/requites/co/:id", h.GetCoRequites)
+	userGroup.Get("/requites/pre/:id", h.GetPreRequites)
+
 }

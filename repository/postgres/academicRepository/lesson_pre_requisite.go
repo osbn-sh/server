@@ -11,6 +11,7 @@ func (d DB) LessonPreRequisites(id int) ([]int, error) {
        SELECT prerequisite_lesson_id 
         FROM lesson_pre_requisite 
         WHERE 
+            status = 'approved' and
 		 	lesson_id = $1; 
     `
 
@@ -37,6 +38,6 @@ func (d DB) LessonPreRequisites(id int) ([]int, error) {
 		fmt.Println(errT)
 		return []int{}, richerror.New("academicRepository-UserCountProfessor").WithErr(errT).WithKind(richerror.KindUnexpected).WithMessage("error on query row")
 	}
-	
+
 	return id_s, nil
 }
